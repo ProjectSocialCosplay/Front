@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {
-    Image, Keyboard,
+    Image,
     SafeAreaView,
     TextInput,
-    TouchableWithoutFeedback,
     View,
     Text,
 } from 'react-native'
@@ -11,6 +10,7 @@ import styles from '../../assets/Styles'
 import {ButtonGray} from "../../components/Button"
 import {Errors} from "../../components/Errors"
 import {fetchApi} from "../../utils/fetchApi"
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 const ForgotPassword = ({navigation}: { navigation: any }) => {
     const [userEmail, setUserEmail] = useState('')
@@ -55,7 +55,12 @@ const ForgotPassword = ({navigation}: { navigation: any }) => {
     // }, [user])
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAwareScrollView contentContainerStyle={{flex: 1}} showsVerticalScrollIndicator={false}
+                                 keyboardShouldPersistTaps='handled'
+                                 scrollEventThrottle={0}
+                                 extraHeight={100}
+                                 scrollEnabled={false}
+                                 enableOnAndroid={true}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.loginTopContainer}>
                     <Image
@@ -94,7 +99,7 @@ const ForgotPassword = ({navigation}: { navigation: any }) => {
                     />
                 </View>
             </SafeAreaView>
-        </TouchableWithoutFeedback>
+        </KeyboardAwareScrollView>
     )
 }
 

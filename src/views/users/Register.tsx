@@ -2,10 +2,8 @@ import React, {useEffect, useState} from 'react'
 import {
     Alert,
     Image,
-    Keyboard,
     SafeAreaView,
     TextInput,
-    TouchableWithoutFeedback,
     View
 } from 'react-native'
 import styles from '../../assets/Styles'
@@ -13,6 +11,7 @@ import {ButtonGray} from "../../components/Button"
 import {Errors} from "../../components/Errors"
 import {fetchApi} from "../../utils/fetchApi"
 import RNDateTimePicker from "@react-native-community/datetimepicker"
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 const Register = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
@@ -87,7 +86,12 @@ const Register = ({navigation}: { navigation: any }) => {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAwareScrollView contentContainerStyle={{flex: 1}} showsVerticalScrollIndicator={false}
+                                 keyboardShouldPersistTaps='handled'
+                                 scrollEventThrottle={16}
+                                 extraHeight={100}
+                                 scrollEnabled={false}
+                                 enableOnAndroid={true}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.loginTopContainer}>
                     <Image
@@ -183,7 +187,7 @@ const Register = ({navigation}: { navigation: any }) => {
                     />
                 </View>
             </SafeAreaView>
-        </TouchableWithoutFeedback>
+        </KeyboardAwareScrollView>
     )
 }
 

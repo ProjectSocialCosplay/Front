@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import {
-    Image, Keyboard,
+    Image,
     SafeAreaView,
     Text,
     TextInput,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     View
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -13,6 +12,7 @@ import styles from '../../assets/Styles'
 import {ButtonGray} from "../../components/Button"
 import {Errors} from "../../components/Errors"
 import {fetchApi} from "../../utils/fetchApi"
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 const Login = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
@@ -71,7 +71,12 @@ const Login = ({navigation}: { navigation: any }) => {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAwareScrollView contentContainerStyle={{flex: 1}} showsVerticalScrollIndicator={false}
+                                 keyboardShouldPersistTaps='handled'
+                                 scrollEventThrottle={0}
+                                 extraHeight={100}
+                                 scrollEnabled={false}
+                                 enableOnAndroid={true}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.loginTopContainer}>
                     <Image
@@ -134,7 +139,7 @@ const Login = ({navigation}: { navigation: any }) => {
                     />
                 </View>
             </SafeAreaView>
-        </TouchableWithoutFeedback>
+        </KeyboardAwareScrollView>
     )
 }
 
