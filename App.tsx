@@ -1,21 +1,46 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import {NavigationContainer} from "@react-navigation/native"
+import {createStackNavigator} from '@react-navigation/stack'
+import {AuthRoutes, AppRoutes} from "./src/views/Navigation";
+import SplashScreen from "./src/views/SplashScreen";
+import {StatusBar} from "react-native";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const Stack = createStackNavigator()
+
+class App extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            isLogged: false
+        }
+    }
+
+    render() {
+        return (
+            <>
+                <StatusBar hidden={false} barStyle={'dark-content'}/>
+                <NavigationContainer>
+                    <Stack.Navigator initialRouteName="SplashScreen">
+                        <Stack.Screen
+                            name="SplashScreen"
+                            component={SplashScreen}
+                            options={{headerShown: false}}
+                        />
+                        <Stack.Screen
+                            name="AuthRoutes"
+                            component={AuthRoutes}
+                            options={{headerShown: false}}
+                        />
+                        <Stack.Screen
+                            name="AppRoutes"
+                            component={AppRoutes}
+                            options={{headerShown: false}}
+                        />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </>
+        )
+    }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App
