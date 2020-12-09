@@ -6,7 +6,7 @@ import {
     View,
     Text,
 } from 'react-native'
-import styles from '../../assets/Styles'
+import {styles} from '../../assets/Styles'
 import {ButtonGray} from "../../components/Button"
 import {Errors} from "../../components/Errors"
 import {fetchApi} from "../../utils/fetchApi"

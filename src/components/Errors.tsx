@@ -1,6 +1,6 @@
 import React from 'react'
 import {Text, View} from 'react-native'
-import styles from "../assets/Styles"
+import {styles} from "../assets/Styles"
 
 export const Errors = ({errors}: { errors: string[] | null }) => {
     return (

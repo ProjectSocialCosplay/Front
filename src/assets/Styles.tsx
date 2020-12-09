@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native'
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     activityIndicator: {
         alignItems: 'center',
         height: 80,
@@ -15,14 +15,6 @@ const styles = StyleSheet.create({
     splashLogo: {
         width: 315,
         height: 115,
-    },
-
-    headerBar: {
-        backgroundColor: '#262626',
-        shadowOffset: {
-            height: 0,
-            width: 0,
-        }
     },
 
     container: {
@@ -91,7 +83,90 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         marginBottom: '5%',
         width: '80%',
+        marginHorizontal: '10%'
     },
 })
 
-export default styles
+export const stylesUser = StyleSheet.create({
+    /*    profileBanner: {
+            height: 300,
+            borderBottomRightRadius: 100,
+            marginRight: -10,
+            backgroundColor: '#d5d7d5',
+        },
+
+        profilePicture: {
+            resizeMode: 'cover',
+            height: 130,
+            width: 100,
+            borderRadius: 20,
+            backgroundColor: '#c4c6c4',
+            position: 'absolute',
+            bottom: -30,
+            left: 50,
+            borderWidth: 4,
+            borderColor: '#F2F2F2',
+        },
+
+        profileInfos: {
+            marginTop: 45,
+            marginHorizontal: 30,
+        },
+
+        username: {
+            marginLeft: 5,
+            fontSize: 25,
+            fontWeight: 'bold',
+        },
+
+        bio: {
+            marginTop: 10,
+            backgroundColor: '#e3e3e3',
+            padding: 15,
+            fontSize: 15,
+            borderRadius: 15,
+            overflow: 'hidden',
+        },*/
+
+    profilePicture: {
+        resizeMode: 'cover',
+        height: 220,
+        width: 175,
+        borderRadius: 70,
+        backgroundColor: '#c4c6c4',
+        borderWidth: 8,
+        borderColor: '#dedede',
+        alignSelf: 'center',
+        marginTop: 15,
+    },
+
+    username: {
+        fontSize: 25,
+        fontWeight: '700',
+        alignSelf: 'center',
+        marginTop: 15,
+        color: '#5d6d80',
+    },
+
+    locate: {
+        fontSize: 18,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        alignSelf: 'center',
+    },
+
+    locatePin: {
+        marginRight: 5,
+    },
+
+    bio: {
+        marginTop: 25,
+        marginHorizontal: 30,
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        fontSize: 15,
+        borderRadius: 15,
+        overflow: 'hidden',
+    },
+})

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Text, SafeAreaView, Button} from 'react-native'
-import styles from "../assets/Styles"
+import {styles} from "../assets/Styles"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Homepage = ({navigation}: { navigation: any }) => {

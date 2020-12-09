@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {ActivityIndicator, Image, SafeAreaView, View} from 'react-native'
-import styles from "../assets/Styles"
+import {styles} from "../assets/Styles"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const SplashScreen = ({navigation}: { navigation: any }) => {

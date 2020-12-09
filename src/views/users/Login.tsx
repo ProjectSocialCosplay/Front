@@ -8,7 +8,7 @@ import {
     View
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import styles from '../../assets/Styles'
+import {styles} from '../../assets/Styles'
 import {ButtonGray} from "../../components/Button"
 import {Errors} from "../../components/Errors"
 import {fetchApi} from "../../utils/fetchApi"
