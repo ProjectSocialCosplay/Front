@@ -6,6 +6,7 @@ import Homepage from "./Homepage"
 import Login from "./users/Login"
 import Register from "./users/Register"
 import ForgotPassword from "./users/ForgotPassword"
+import Profile from "./users/Profile"
 
 const Stack = createStackNavigator()
 
@@ -55,6 +56,7 @@ export const AppRoutes = () => {
             }}
         >
             <Tab.Screen name="Home" component={Homepage}/>
+            <Tab.Screen name="Profile" component={Profile}/>
         </Tab.Navigator>
     )
 }

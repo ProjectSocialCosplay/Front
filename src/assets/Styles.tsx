@@ -22,6 +22,10 @@ export const styles = StyleSheet.create({
         backgroundColor: '#FDFFFC',
     },
 
+    content: {
+        marginHorizontal: 30,
+    },
+
     logo: {
         width: 135,
         height: 50,
@@ -85,59 +89,52 @@ export const styles = StyleSheet.create({
         width: '80%',
         marginHorizontal: '10%'
     },
+
+    onePost: {
+        marginVertical: 10,
+        backgroundColor: '#eaeaea',
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        borderRadius: 15,
+    },
+
+    postAuthorData: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    postAuthorName: {
+        marginLeft: 10,
+        fontSize: 20,
+        fontWeight: '500',
+    },
+
+    postDate: {
+        marginLeft: 10,
+        fontSize: 10,
+        fontWeight: '400',
+    },
+
+    postContent: {
+        marginTop: 15,
+    },
 })
 
 export const stylesUser = StyleSheet.create({
-    /*    profileBanner: {
-            height: 300,
-            borderBottomRightRadius: 100,
-            marginRight: -10,
-            backgroundColor: '#d5d7d5',
-        },
-
-        profilePicture: {
-            resizeMode: 'cover',
-            height: 130,
-            width: 100,
-            borderRadius: 20,
-            backgroundColor: '#c4c6c4',
-            position: 'absolute',
-            bottom: -30,
-            left: 50,
-            borderWidth: 4,
-            borderColor: '#F2F2F2',
-        },
-
-        profileInfos: {
-            marginTop: 45,
-            marginHorizontal: 30,
-        },
-
-        username: {
-            marginLeft: 5,
-            fontSize: 25,
-            fontWeight: 'bold',
-        },
-
-        bio: {
-            marginTop: 10,
-            backgroundColor: '#e3e3e3',
-            padding: 15,
-            fontSize: 15,
-            borderRadius: 15,
-            overflow: 'hidden',
-        },*/
-
-    profilePicture: {
-        resizeMode: 'cover',
-        height: 220,
-        width: 175,
-        borderRadius: 70,
-        backgroundColor: '#c4c6c4',
-        borderWidth: 8,
-        borderColor: '#dedede',
-        alignSelf: 'center',
+    avatarBorder: {
         marginTop: 15,
+        width: 185,
+        height: 185,
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#dedede',
+        borderRadius: 92,
+    },
+
+    avatarImage: {
+        backgroundColor: '#648ba5',
     },
 
     username: {
