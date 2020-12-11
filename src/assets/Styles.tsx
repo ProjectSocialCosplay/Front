@@ -83,11 +83,9 @@ export const styles = StyleSheet.create({
     errors: {
         backgroundColor: '#e71d36',
         borderRadius: 15,
-        paddingVertical: 15,
-        paddingHorizontal: 30,
-        marginBottom: '5%',
+        paddingHorizontal: 5,
         width: '80%',
-        marginHorizontal: '10%'
+        alignSelf: 'center',
     },
 
     onePost: {

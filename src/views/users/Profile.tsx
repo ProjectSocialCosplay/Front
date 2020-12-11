@@ -5,6 +5,7 @@ import {fetchApi} from "../../utils/fetchApi"
 import {FontAwesome5} from '@expo/vector-icons'
 import {Avatar} from 'react-native-paper'
 import {Post} from "../../components/Post"
+import {Errors} from "../../components/Errors";
 
 const Profile = ({navigation}: { navigation: any }) => {
     const [user, setUser] = useState({
@@ -55,7 +56,7 @@ const Profile = ({navigation}: { navigation: any }) => {
                 if (e.errors) {
                     setErrors([e.errors])
                 } else {
-                    setErrors(['An error has been encountered, please try again '])
+                    setErrors(['An error has been encountered, please try again'])
                 }
             }
         })
@@ -63,6 +64,7 @@ const Profile = ({navigation}: { navigation: any }) => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <Errors errors={errors}/>
             {
                 isWait ?
                     <ActivityIndicator
