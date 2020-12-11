@@ -6,6 +6,8 @@ import Homepage from "./Homepage"
 import Login from "./users/Login"
 import Register from "./users/Register"
 import ForgotPassword from "./users/ForgotPassword"
+import Profile from "./users/Profile"
+import ProfileUpdate from "./users/ProfileUpdate"
 
 const Stack = createStackNavigator()
 
@@ -33,6 +35,46 @@ export const AuthRoutes = () => {
 
 const Tab = createBottomTabNavigator()
 
+const HomeRoutes = () => {
+    return (
+        <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen
+                name="Home"
+                component={Homepage}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Profile"
+                component={Profile}
+                options={{headerShown: false}}
+            />
+        </Stack.Navigator>
+    )
+}
+
+const ProfileRoutes = () => {
+    return (
+        <Stack.Navigator initialRouteName="Profile">
+            <Stack.Screen
+                name="Profile"
+                component={Profile}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Update profile"
+                component={ProfileUpdate}
+                options={{
+                    headerBackTitleVisible: false,
+                    headerStyle: {shadowColor: 'transparent'},
+                    headerTintColor: '#000',
+                    headerLeftContainerStyle: {marginLeft: 10},
+                }}
+            />
+        </Stack.Navigator>
+    )
+}
+
+
 export const AppRoutes = () => {
     return (
         <Tab.Navigator
@@ -54,7 +96,8 @@ export const AppRoutes = () => {
                 inactiveTintColor: 'gray',
             }}
         >
-            <Tab.Screen name="Home" component={Homepage}/>
+            <Tab.Screen name="Home" component={HomeRoutes}/>
+            <Tab.Screen name="Profile" component={ProfileRoutes}/>
         </Tab.Navigator>
     )
 }

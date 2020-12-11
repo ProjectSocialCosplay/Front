@@ -22,6 +22,10 @@ export const styles = StyleSheet.create({
         backgroundColor: '#FDFFFC',
     },
 
+    content: {
+        marginHorizontal: 30,
+    },
+
     logo: {
         width: 135,
         height: 50,
@@ -56,20 +60,23 @@ export const styles = StyleSheet.create({
         margin: '2%',
     },
 
+    inputArea: {
+        paddingTop: 15,
+        height: 120,
+    },
+
+    inputAreaSizeInfos: {
+        position: 'absolute',
+        right: 60,
+        bottom: 75,
+    },
+
     inputDate: {
         backgroundColor: '#eaeaea',
         borderRadius: 15,
         width: '80%',
         margin: '2%',
         padding: '5%',
-    },
-
-    btnGray: {
-        paddingHorizontal: '8%',
-        paddingVertical: '5%',
-        backgroundColor: '#3D4959',
-        borderRadius: 15,
-        marginTop: 10,
     },
 
     textWhite: {
@@ -79,65 +86,88 @@ export const styles = StyleSheet.create({
     errors: {
         backgroundColor: '#e71d36',
         borderRadius: 15,
-        paddingVertical: 15,
-        paddingHorizontal: 30,
-        marginBottom: '5%',
+        paddingHorizontal: 5,
         width: '80%',
-        marginHorizontal: '10%'
+        alignSelf: 'center',
     },
+
+    onePost: {
+        marginVertical: 10,
+        backgroundColor: '#f8f8f8',
+        paddingHorizontal: 20,
+        paddingTop: 15,
+        paddingBottom: 5,
+        borderRadius: 15,
+    },
+
+    postAuthorData: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    postAuthorName: {
+        marginLeft: 10,
+        fontSize: 18,
+        fontWeight: '500',
+    },
+
+    postDate: {
+        marginLeft: 10,
+        fontSize: 10,
+        fontWeight: '400',
+    },
+
+    postContent: {
+        marginTop: 15,
+    },
+
+    postInfos: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'baseline',
+        marginTop: 5,
+    },
+
+    button: {
+        borderRadius: 15,
+    },
+
+    buttonContent: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 15,
+    }
 })
 
 export const stylesUser = StyleSheet.create({
-    /*    profileBanner: {
-            height: 300,
-            borderBottomRightRadius: 100,
-            marginRight: -10,
-            backgroundColor: '#d5d7d5',
-        },
-
-        profilePicture: {
-            resizeMode: 'cover',
-            height: 130,
-            width: 100,
-            borderRadius: 20,
-            backgroundColor: '#c4c6c4',
-            position: 'absolute',
-            bottom: -30,
-            left: 50,
-            borderWidth: 4,
-            borderColor: '#F2F2F2',
-        },
-
-        profileInfos: {
-            marginTop: 45,
-            marginHorizontal: 30,
-        },
-
-        username: {
-            marginLeft: 5,
-            fontSize: 25,
-            fontWeight: 'bold',
-        },
-
-        bio: {
-            marginTop: 10,
-            backgroundColor: '#e3e3e3',
-            padding: 15,
-            fontSize: 15,
-            borderRadius: 15,
-            overflow: 'hidden',
-        },*/
-
-    profilePicture: {
-        resizeMode: 'cover',
-        height: 220,
-        width: 175,
-        borderRadius: 70,
-        backgroundColor: '#c4c6c4',
-        borderWidth: 8,
-        borderColor: '#dedede',
-        alignSelf: 'center',
+    avatarBorder: {
         marginTop: 15,
+        width: 185,
+        height: 185,
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#dedede',
+        borderRadius: 92,
+        position: 'relative',
+    },
+
+    avatarImage: {
+        backgroundColor: '#648ba5',
+    },
+
+    avatarImageEdit: {
+        position: 'absolute',
+        bottom: -20,
+        right: -75,
+        backgroundColor: '#3D4958',
+        padding: 10,
+        borderRadius: 25,
+        overflow: 'hidden',
+        borderWidth: 4,
+        borderColor: '#dedede',
     },
 
     username: {
@@ -168,5 +198,25 @@ export const stylesUser = StyleSheet.create({
         fontSize: 15,
         borderRadius: 15,
         overflow: 'hidden',
+    },
+
+    buttonActions: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'stretch'
+    },
+
+    friends: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        marginBottom: 10,
+    },
+
+    oneFriend: {
+        flexBasis: '20%',
+        paddingVertical: 5,
     },
 })
