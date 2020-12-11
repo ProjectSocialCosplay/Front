@@ -117,6 +117,12 @@ export const styles = StyleSheet.create({
     postContent: {
         marginTop: 15,
     },
+
+    button: {
+        paddingVertical: 5,
+        borderRadius: 15,
+        marginTop: 10,
+    }
 })
 
 export const stylesUser = StyleSheet.create({
@@ -163,5 +169,25 @@ export const stylesUser = StyleSheet.create({
         fontSize: 15,
         borderRadius: 15,
         overflow: 'hidden',
+    },
+
+    buttonActions: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'baseline',
+    },
+
+    friends: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        marginBottom: 10,
+    },
+
+    oneFriend: {
+        flexBasis: '20%',
+        paddingVertical: 5,
     },
 })
