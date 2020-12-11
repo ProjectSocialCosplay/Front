@@ -9,10 +9,10 @@ import {
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {styles} from '../../assets/Styles'
-import {ButtonGray} from "../../components/Button"
 import {Errors} from "../../components/Errors"
 import {fetchApi} from "../../utils/fetchApi"
-import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
+import {Button} from "react-native-paper"
 
 const Login = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
@@ -119,7 +119,17 @@ const Login = ({navigation}: { navigation: any }) => {
                         onSubmitEditing={() => handleSubmit()}
                     />
 
-                    <ButtonGray buttonTitle="Sign in" onPress={() => handleSubmit()}/>
+                    <Button
+                        mode="contained"
+                        color={'#3D4959'}
+                        uppercase={false}
+                        style={{...styles.button, marginTop: 10}}
+                        contentStyle={styles.buttonContent}
+                        onPress={() => handleSubmit()}
+                    >
+                        Sign in
+                    </Button>
+
                     <TouchableOpacity onPress={() => navigation.reset({
                             index: 0,
                             routes: [{name: 'Sign in'}, {name: 'Forgot your password'}],
@@ -129,14 +139,20 @@ const Login = ({navigation}: { navigation: any }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.loginBottomContainer}>
-                    <ButtonGray
-                        buttonTitle="Create an account"
+                    <Button
+                        mode="contained"
+                        color={'#3D4959'}
+                        uppercase={false}
+                        style={{...styles.button}}
+                        contentStyle={styles.buttonContent}
                         onPress={() => navigation.reset({
                                 index: 0,
                                 routes: [{name: 'Sign in'}, {name: 'Sign up'}],
                             }
                         )}
-                    />
+                    >
+                        Create an account
+                    </Button>
                 </View>
             </SafeAreaView>
         </KeyboardAwareScrollView>

@@ -7,11 +7,10 @@ import {
     View
 } from 'react-native'
 import {styles} from '../../assets/Styles'
-import {ButtonGray} from "../../components/Button"
 import {Errors} from "../../components/Errors"
 import {fetchApi} from "../../utils/fetchApi"
-import RNDateTimePicker from "@react-native-community/datetimepicker"
-import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
+import {Button} from "react-native-paper"
 
 const Register = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
@@ -128,24 +127,10 @@ const Register = ({navigation}: { navigation: any }) => {
                         ref={input => {
                             inputs['email'] = input
                         }}
+                        onSubmitEditing={() => {
+                            focusTheField('password')
+                        }}
                     />
-
-                    <View style={styles.inputDate}>
-                        <RNDateTimePicker
-                            style={{height: 50}}
-                            value={userBirthdate}
-                            mode={"date"}
-                            is24Hour={true}
-                            display="default"
-                            onChange={(event, selectedDate) => {
-                                const currentDate = selectedDate || userBirthdate
-
-                                setUserBirthdate(currentDate)
-                            }}
-                            maximumDate={new Date()}
-                            minimumDate={new Date(1950, 0, 1)}
-                        />
-                    </View>
 
                     <TextInput
                         style={styles.input}
@@ -157,6 +142,9 @@ const Register = ({navigation}: { navigation: any }) => {
                         autoCorrect={false}
                         secureTextEntry={true}
                         returnKeyType="next"
+                        ref={input => {
+                            inputs['password'] = input
+                        }}
                         onSubmitEditing={() => {
                             focusTheField('repeatPassword')
                         }}
@@ -178,13 +166,28 @@ const Register = ({navigation}: { navigation: any }) => {
                         onSubmitEditing={() => handleSubmit()}
                     />
 
-                    <ButtonGray buttonTitle="Sign up" onPress={() => handleSubmit()}/>
+                    <Button
+                        mode="contained"
+                        color={'#3D4959'}
+                        uppercase={false}
+                        style={{...styles.button, marginTop: 10}}
+                        contentStyle={styles.buttonContent}
+                        onPress={() => handleSubmit()}
+                    >
+                        Sign up
+                    </Button>
                 </View>
                 <View style={styles.loginBottomContainer}>
-                    <ButtonGray
-                        buttonTitle="I already have an account"
+                    <Button
+                        mode="contained"
+                        color={'#3D4959'}
+                        uppercase={false}
+                        style={{...styles.button}}
+                        contentStyle={styles.buttonContent}
                         onPress={() => navigation.navigate('Sign in')}
-                    />
+                    >
+                        I already have an account
+                    </Button>
                 </View>
             </SafeAreaView>
         </KeyboardAwareScrollView>

@@ -67,15 +67,6 @@ export const styles = StyleSheet.create({
         margin: '2%',
         padding: '5%',
     },
-
-    btnGray: {
-        paddingHorizontal: '8%',
-        paddingVertical: '5%',
-        backgroundColor: '#3D4959',
-        borderRadius: 15,
-        marginTop: 10,
-    },
-
     textWhite: {
         color: '#fff',
     },
@@ -90,9 +81,10 @@ export const styles = StyleSheet.create({
 
     onePost: {
         marginVertical: 10,
-        backgroundColor: '#eaeaea',
+        backgroundColor: '#f8f8f8',
         paddingHorizontal: 20,
-        paddingVertical: 15,
+        paddingTop: 15,
+        paddingBottom: 5,
         borderRadius: 15,
     },
 
@@ -104,7 +96,7 @@ export const styles = StyleSheet.create({
 
     postAuthorName: {
         marginLeft: 10,
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '500',
     },
 
@@ -118,10 +110,22 @@ export const styles = StyleSheet.create({
         marginTop: 15,
     },
 
+    postInfos: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'baseline',
+        marginTop: 5,
+    },
+
     button: {
-        paddingVertical: 5,
         borderRadius: 15,
-        marginTop: 10,
+    },
+
+    buttonContent: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 15,
     }
 })
 
@@ -175,7 +179,7 @@ export const stylesUser = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        alignItems: 'baseline',
+        alignItems: 'stretch'
     },
 
     friends: {

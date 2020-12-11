@@ -7,10 +7,9 @@ import {
     Text,
 } from 'react-native'
 import {styles} from '../../assets/Styles'
-import {ButtonGray} from "../../components/Button"
 import {Errors} from "../../components/Errors"
-import {fetchApi} from "../../utils/fetchApi"
-import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
+import {Button} from "react-native-paper"
 
 const ForgotPassword = ({navigation}: { navigation: any }) => {
     const [userEmail, setUserEmail] = useState('')
@@ -86,17 +85,32 @@ const ForgotPassword = ({navigation}: { navigation: any }) => {
                         }}
                     />
 
-                    <ButtonGray buttonTitle="Reset" onPress={() => handleSubmit()}/>
+                    <Button
+                        mode="contained"
+                        color={'#3D4959'}
+                        uppercase={false}
+                        style={{...styles.button, marginTop: 10}}
+                        contentStyle={styles.buttonContent}
+                        onPress={() => handleSubmit()}
+                    >
+                        Reset
+                    </Button>
 
                     <Text style={{...styles.forgotPassword, width: '80%', textAlign: 'center'}}>
                         To reset your password, please enter the email address associated with your account</Text>
                 </View>
 
                 <View style={styles.loginBottomContainer}>
-                    <ButtonGray
-                        buttonTitle="Cancel"
+                    <Button
+                        mode="contained"
+                        color={'#3D4959'}
+                        uppercase={false}
+                        style={{...styles.button, marginTop: 10}}
+                        contentStyle={styles.buttonContent}
                         onPress={() => navigation.navigate('Sign in')}
-                    />
+                    >
+                        Cancel
+                    </Button>
                 </View>
             </SafeAreaView>
         </KeyboardAwareScrollView>
