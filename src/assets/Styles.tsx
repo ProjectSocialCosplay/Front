@@ -60,6 +60,17 @@ export const styles = StyleSheet.create({
         margin: '2%',
     },
 
+    inputArea: {
+        paddingTop: 15,
+        height: 120,
+    },
+
+    inputAreaSizeInfos: {
+        position: 'absolute',
+        right: 60,
+        bottom: 75,
+    },
+
     inputDate: {
         backgroundColor: '#eaeaea',
         borderRadius: 15,
@@ -67,6 +78,7 @@ export const styles = StyleSheet.create({
         margin: '2%',
         padding: '5%',
     },
+
     textWhite: {
         color: '#fff',
     },
@@ -139,10 +151,23 @@ export const stylesUser = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#dedede',
         borderRadius: 92,
+        position: 'relative',
     },
 
     avatarImage: {
         backgroundColor: '#648ba5',
+    },
+
+    avatarImageEdit: {
+        position: 'absolute',
+        bottom: -20,
+        right: -75,
+        backgroundColor: '#3D4958',
+        padding: 10,
+        borderRadius: 25,
+        overflow: 'hidden',
+        borderWidth: 4,
+        borderColor: '#dedede',
     },
 
     username: {

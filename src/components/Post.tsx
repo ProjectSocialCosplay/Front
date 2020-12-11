@@ -1,9 +1,17 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Text, View} from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
-import {Avatar} from "react-native-paper"
+import {Avatar, Button, Caption, Divider} from "react-native-paper"
 
-export const Post = ({post}: { post: any }) => {
+export const Post = ({data}: { data: any }) => {
+    const [post, setPost] = useState(data)
+
+    const pushToComment = () => {
+        let comment = post.comment
+        comment.push('')
+        setPost({...post, comment: comment})
+    }
+
     return (
         <View style={styles.onePost}>
             <View style={styles.postAuthorData}>
@@ -24,11 +32,30 @@ export const Post = ({post}: { post: any }) => {
                 }
                 <View>
                     <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                    <Text style={styles.postDate}>10 Dec 2020 at 12:09am</Text>
+                    <Text style={styles.postDate}>{post.updatedAt}</Text>
                 </View>
             </View>
             <View style={styles.postContent}>
                 <Text>{post.content}</Text>
+                {
+                    (post.comment.length > 0 || post.comment.length > 0) &&
+                    <View style={styles.postInfos}>
+                        <Caption>{post.comment.length + ' likes'}</Caption>
+                        <Caption>{post.comment.length + ' comments'}</Caption>
+                    </View>
+                }
+                <Divider style={{marginTop: 10}}/>
+                <View style={stylesUser.buttonActions}>
+                    <Button
+                        color={post.comment.length > 0 ? '#5eaade' : '#000'}
+                        icon={post.comment.length > 0 ? 'thumb-up' : ''}
+                        onPress={() => pushToComment()}
+                    >
+                        Like
+                    </Button>
+                    <Button color={'#000'}>Comment</Button>
+                    <Button color={'#000'}>Share</Button>
+                </View>
             </View>
         </View>
     )

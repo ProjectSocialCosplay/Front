@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react'
-import {ActivityIndicator, SafeAreaView, ScrollView, Text, View} from 'react-native'
+import React, {useCallback, useEffect, useState} from 'react'
+import {ActivityIndicator, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
 import {styles, stylesUser} from "../../assets/Styles"
 import {fetchApi} from "../../utils/fetchApi"
 import {FontAwesome5} from '@expo/vector-icons'
 import {Avatar, Title, Caption, Button} from 'react-native-paper'
 import {Post} from "../../components/Post"
-import {Errors} from "../../components/Errors";
+import {Errors} from "../../components/Errors"
+import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 const Profile = ({route, navigation}: { route: any, navigation: any }) => {
     const [user, setUser] = useState({
@@ -18,21 +19,20 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
     })
     const [errors, setErrors] = useState<string[] | null>(null)
     const [isWait, setIsWait] = useState<boolean>(true)
+    const [refreshing, setRefreshing] = React.useState(false);
 
-    useEffect(() => {
-        return navigation.addListener('focus', async () => {
-            setErrors([])
-            setIsWait(true)
-            let request
+    const fetchData = async () => {
+        setErrors([])
+        let request
 
-            if (route.params?.userId) {
-                request = `user(id: "${route.params?.userId}"){`
-            } else {
-                request = 'getAuthUser{'
-            }
+        if (route.params?.userId) {
+            request = `user(id: "${route.params?.userId}"){`
+        } else {
+            request = 'getAuthUser{'
+        }
 
-            const query = JSON.stringify({
-                query: `query {
+        const query = JSON.stringify({
+            query: `query {
                     ${request}
                         pseudo
                         bio
@@ -51,27 +51,37 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
                                     Url
                                 }
                             }
+                            updatedAt
                         }
                     }
                 }`
-            })
-
-            try {
-                const response = await fetchApi(query)
-                if (route.params?.userId) {
-                    setUser(response.user)
-                } else {
-                    setUser(response.getAuthUser)
-                }
-                setIsWait(false)
-            } catch (e) {
-                if (e.errors) {
-                    setErrors([e.errors])
-                } else {
-                    setErrors(['An error has been encountered, please try again'])
-                }
-            }
         })
+
+        try {
+            const response = await fetchApi(query)
+            if (route.params?.userId) {
+                setUser(response.user)
+            } else {
+                setUser(response.getAuthUser)
+            }
+            setIsWait(false)
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                setErrors(['An error has been encountered, please try again'])
+            }
+        }
+    }
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchData()
+        setRefreshing(false)
+    }, []);
+
+    useEffect(() => {
+        return navigation.addListener('focus', () => fetchData())
     }, [navigation])
 
     return (
@@ -85,7 +95,10 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
                         style={styles.splashView}
                     />
                     :
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                    >
                         <View style={stylesUser.avatarBorder}>
                             {
                                 user.profile_image_url.Url ?
@@ -126,24 +139,38 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
                                             mode="contained"
                                             color={'#43ab89'}
                                             dark={true}
-                                            icon="account-plus"
-                                            style={{...styles.button, marginBottom: 20}}
+                                            icon={"account-plus"}
+                                            style={{...styles.button, marginTop: 10, marginBottom: 20}}
+                                            contentStyle={styles.buttonContent}
                                             onPress={() => {
                                                 alert('TODO: Add friend')
                                             }}
                                         >
-                                            Add friend
+                                            Invite
                                         </Button>
                                         <Button
                                             mode="contained"
-                                            color={'#5977c6'}
-                                            icon="message-draw"
-                                            style={{...styles.button, marginBottom: 20}}
+                                            color={'#3962d0'}
+                                            style={{...styles.button, marginTop: 10, marginBottom: 20}}
+                                            contentStyle={styles.buttonContent}
                                             onPress={() => {
                                                 alert('TODO: Send message')
                                             }}
                                         >
-                                            Message
+                                            <MaterialCommunityIcons name="message-draw" size={20} color="white"/>
+
+                                        </Button>
+                                        <Button
+                                            mode="contained"
+                                            color={'#ee7f5e'}
+                                            dark={true}
+                                            style={{...styles.button, marginTop: 10, marginBottom: 20}}
+                                            contentStyle={styles.buttonContent}
+                                            onPress={() => {
+                                                alert('TODO: Marketplace')
+                                            }}
+                                        >
+                                            <MaterialCommunityIcons name="shopping" size={20} color="white"/>
                                         </Button>
                                     </View>
                                     :
@@ -151,9 +178,10 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
                                         mode="contained"
                                         color={'#273c75'}
                                         icon="account-edit"
-                                        style={{...styles.button, marginBottom: 20}}
+                                        style={{...styles.button, marginTop: 10, marginBottom: 20}}
+                                        contentStyle={styles.buttonContent}
                                         onPress={() => {
-                                            alert('TODO: Edit profile')
+                                            navigation.navigate('Update profile')
                                         }}
                                     >
                                         Edit profile
@@ -241,7 +269,8 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
 
                             <Button
                                 mode="outlined"
-                                style={{...styles.button, marginBottom: 20}}
+                                style={{...styles.button, marginTop: 10, marginBottom: 20}}
+                                contentStyle={styles.buttonContent}
                                 color={'#5d6d80'}
                                 onPress={() => {
                                     alert('TODO: Show all friends')
@@ -253,7 +282,7 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
                             {
                                 user.posts.map((el, index) => {
                                     return (
-                                        <Post post={el} key={index}/>
+                                        <Post data={el} key={index}/>
                                     )
                                 })
                             }
