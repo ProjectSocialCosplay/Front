@@ -19,7 +19,7 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
     })
     const [errors, setErrors] = useState<string[] | null>(null)
     const [isWait, setIsWait] = useState<boolean>(true)
-    const [refreshing, setRefreshing] = React.useState(false);
+    const [refreshing, setRefreshing] = React.useState(false)
 
     const fetchData = async () => {
         setErrors([])
@@ -46,6 +46,7 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
                                 _id
                             }
                             author{
+                                _id
                                 pseudo
                                 profile_image_url{
                                     Url
@@ -75,10 +76,10 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
     }
 
     const onRefresh = useCallback(async () => {
-        setRefreshing(true);
+        setRefreshing(true)
         await fetchData()
         setRefreshing(false)
-    }, []);
+    }, [])
 
     useEffect(() => {
         return navigation.addListener('focus', () => fetchData())

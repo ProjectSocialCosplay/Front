@@ -58,20 +58,6 @@ const ProfileUpdate = ({navigation}: { navigation: any }) => {
                         profile_image_url{
                             Url
                         }
-                        posts{
-                            _id
-                            content
-                            comment{
-                                _id
-                            }
-                            author{
-                                pseudo
-                                profile_image_url{
-                                    Url
-                                }
-                            }
-                            updatedAt
-                        }
                     }
                 }`
                 })

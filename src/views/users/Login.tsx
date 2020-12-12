@@ -38,7 +38,7 @@ const Login = ({navigation}: { navigation: any }) => {
     useEffect(() => {
         const fetchData = async () => {
             setErrors([])
-            const query = JSON.stringify({
+            let query = JSON.stringify({
                 query: `query {
                 login( email: "${user.email}", password: "${user.password}" ) {
                         token
@@ -47,8 +47,20 @@ const Login = ({navigation}: { navigation: any }) => {
             })
 
             try {
-                const response = await fetchApi(query)
+                let response = await fetchApi(query)
                 await AsyncStorage.setItem('token', response.login.token)
+
+                query = JSON.stringify({
+                    query: `query {
+                        getAuthUser{
+                            _id
+                        }
+                    }`
+                })
+
+                response = await fetchApi(query)
+                await AsyncStorage.setItem('onlineUserId', response.getAuthUser._id)
+
                 navigation.reset({
                         index: 0,
                         routes: [{name: 'AppRoutes'}],
