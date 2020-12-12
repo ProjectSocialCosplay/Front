@@ -8,7 +8,7 @@ import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {MaterialIcons} from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
 
-const ProfileUpdate = ({navigation}: { navigation: any }) => {
+const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
     const [user, setUser] = useState({
         pseudo: '',
@@ -182,4 +182,4 @@ const ProfileUpdate = ({navigation}: { navigation: any }) => {
     )
 }
 
-export default ProfileUpdate
+export default ProfileUpdateScreen

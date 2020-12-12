@@ -14,7 +14,7 @@ import {fetchApi} from "../../utils/fetchApi"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {Button} from "react-native-paper"
 
-const Login = ({navigation}: { navigation: any }) => {
+const LoginScreen = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
     const [userEmail, setUserEmail] = useState('')
     const [userPassword, setUserPassword] = useState('')
@@ -171,4 +171,4 @@ const Login = ({navigation}: { navigation: any }) => {
     )
 }
 
-export default Login
+export default LoginScreen

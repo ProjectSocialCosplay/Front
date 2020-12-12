@@ -16,10 +16,10 @@ export const Post = ({data}: { data: any }) => {
         setOnlineUserId(value ? value : '')
     })
 
-    const pushToComment = () => {
-        let comment = post.comment
-        comment.push('')
-        setPost({...post, comment: comment})
+    const isLiked = post.like.some((l: { _id: string }) => l._id === onlineUserId)
+
+    const pushLike = () => {
+        setPost({...post, like: [{_id: onlineUserId}]})
     }
 
     return (
@@ -65,9 +65,9 @@ export const Post = ({data}: { data: any }) => {
                 <View style={styles.postContent}>
                     <Text>{post.content}</Text>
                     {
-                        (post.comment.length > 0 || post.comment.length > 0) &&
+                        (post.like.length > 0 || post.comment.length > 0) &&
                         <View style={styles.postInfos}>
-                            <Caption>{post.comment.length + ' likes'}</Caption>
+                            <Caption>{post.like.length + ' likes'}</Caption>
                             <Caption>{post.comment.length + ' comments'}</Caption>
                         </View>
                     }
@@ -76,9 +76,9 @@ export const Post = ({data}: { data: any }) => {
             </Pressable>
             <View style={stylesUser.buttonActions}>
                 <Button
-                    color={post.comment.length > 0 ? '#5eaade' : '#000'}
-                    icon={post.comment.length > 0 ? 'thumb-up' : ''}
-                    onPress={() => pushToComment()}
+                    color={isLiked ? '#5eaade' : '#000'}
+                    icon={isLiked ? 'thumb-up' : ''}
+                    onPress={() => pushLike()}
                 >
                     Like
                 </Button>

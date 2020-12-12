@@ -2,12 +2,12 @@ import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {Feather} from '@expo/vector-icons'
-import Homepage from "./Homepage"
-import Login from "./users/Login"
-import Register from "./users/Register"
-import ForgotPassword from "./users/ForgotPassword"
-import Profile from "./users/Profile"
-import ProfileUpdate from "./users/ProfileUpdate"
+import HomeScreen from "./HomeScreen"
+import LoginScreen from "./users/LoginScreen"
+import RegisterScreen from "./users/RegisterScreen"
+import ForgotPasswordScreen from "./users/ForgotPasswordScreen"
+import ProfileScreen from "./users/ProfileScreen"
+import ProfileUpdateScreen from "./users/ProfileUpdateScreen"
 
 const Stack = createStackNavigator()
 
@@ -16,17 +16,17 @@ export const AuthRoutes = () => {
         <Stack.Navigator initialRouteName="Sign in">
             <Stack.Screen
                 name="Sign in"
-                component={Login}
+                component={LoginScreen}
                 options={{headerShown: false}}
             />
             <Stack.Screen
                 name="Sign up"
-                component={Register}
+                component={RegisterScreen}
                 options={{headerShown: false}}
             />
             <Stack.Screen
                 name="Forgot your password"
-                component={ForgotPassword}
+                component={ForgotPasswordScreen}
                 options={{headerShown: false}}
             />
         </Stack.Navigator>
@@ -40,12 +40,12 @@ const HomeRoutes = () => {
         <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
                 name="Home"
-                component={Homepage}
+                component={HomeScreen}
                 options={{headerShown: false}}
             />
             <Stack.Screen
                 name="Profile"
-                component={Profile}
+                component={ProfileScreen}
                 options={{headerShown: false}}
             />
         </Stack.Navigator>
@@ -57,12 +57,12 @@ const ProfileRoutes = () => {
         <Stack.Navigator initialRouteName="Profile">
             <Stack.Screen
                 name="Profile"
-                component={Profile}
+                component={ProfileScreen}
                 options={{headerShown: false}}
             />
             <Stack.Screen
                 name="Update profile"
-                component={ProfileUpdate}
+                component={ProfileUpdateScreen}
                 options={{
                     headerBackTitleVisible: false,
                     headerStyle: {shadowColor: 'transparent'},

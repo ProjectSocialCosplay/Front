@@ -8,7 +8,7 @@ import {Post} from "../../components/Post"
 import {Errors} from "../../components/Errors"
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
-const Profile = ({route, navigation}: { route: any, navigation: any }) => {
+const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [user, setUser] = useState({
         pseudo: '',
         bio: '',
@@ -43,6 +43,9 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
                             _id
                             content
                             comment{
+                                _id
+                            }
+                            like{
                                 _id
                             }
                             author{
@@ -294,4 +297,4 @@ const Profile = ({route, navigation}: { route: any, navigation: any }) => {
     )
 }
 
-export default Profile
+export default ProfileScreen
