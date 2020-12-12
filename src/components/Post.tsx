@@ -28,9 +28,8 @@ export const Post = ({data}: { data: any }) => {
                 <View style={styles.postAuthorData}>
                     <Pressable
                         onPress={() =>
-                            screenName !== 'Profile' ?
+                            screenName !== 'Profile' || onlineUserId === post.author._id ?
                                 navigation.navigate('Profile') :
-                                onlineUserId !== post.author._id &&
                                 navigation.push('Profile', {userId: post.author._id})
                         }
                     >
@@ -53,9 +52,8 @@ export const Post = ({data}: { data: any }) => {
                     <View>
                         <Pressable
                             onPress={() =>
-                                screenName !== 'Profile' ?
+                                screenName !== 'Profile' || onlineUserId === post.author._id ?
                                     navigation.navigate('Profile') :
-                                    onlineUserId !== post.author._id &&
                                     navigation.push('Profile', {userId: post.author._id})
                             }
                         >

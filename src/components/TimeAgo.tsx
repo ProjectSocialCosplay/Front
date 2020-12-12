@@ -11,7 +11,7 @@ export const TimeAgo = ({time}: { time: string }) => {
             return 'A few seconds ago'
         } else if (diff < 3600) {
             const minute = diff / 60 | 0
-            return minute + minute === 1 ? ' minute ago' : ' minutes ago'
+            return minute + (minute === 1 ? ' minute ago' : ' minutes ago')
         } else if (diff < 3600 * 24) {
             const minute = diff / 3600 | 0
             return minute + (minute === 1 ? ' hour ago' : ' hours ago')
