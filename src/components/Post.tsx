@@ -1,14 +1,15 @@
 import React, {useState} from 'react'
-import {Pressable, Text, View} from 'react-native'
+import {Image, Pressable, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
-import {Avatar, Button, Caption, Divider} from "react-native-paper"
+import {Avatar} from "react-native-paper"
 import {useNavigation, useNavigationState} from '@react-navigation/native'
 import {TimeAgo} from "./TimeAgo"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 export const Post = ({data}: { data: any }) => {
     const [post, setPost] = useState(data)
-    const [onlineUserId, setOnlineUserId] = useState('')
+    const [onlineUserId, setOnlineUserId] = useState<string>()
     const navigation = useNavigation<any>()
     const screenName = useNavigationState((state) => state.routes[state.index].name)
 
@@ -23,68 +24,68 @@ export const Post = ({data}: { data: any }) => {
     }
 
     return (
-        <View style={styles.onePost}>
-            <Pressable onPress={() => alert('TODO: Redirect to post view')}>
-                <View style={styles.postAuthorData}>
-                    <Pressable
-                        onPress={() =>
-                            screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                navigation.navigate('Profile') :
-                                navigation.push('Profile', {userId: post.author._id})
-                        }
-                    >
-                        {
-                            post.author.profile_image_url.Url !== null ?
-                                <Avatar.Image
-                                    size={35}
-                                    source={{uri: post.author.profile_image_url.Url}}
-                                    style={stylesUser.avatarImage}
-                                />
-                                :
-                                <Avatar.Text
-                                    size={35}
-                                    label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                    style={stylesUser.avatarImage}
-                                    color={'#fff'}
-                                />
-                        }
-                    </Pressable>
-                    <View>
-                        <Pressable
-                            onPress={() =>
-                                screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                    navigation.navigate('Profile') :
-                                    navigation.push('Profile', {userId: post.author._id})
-                            }
-                        >
-                            <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                        </Pressable>
-                        <Text style={styles.postDate}><TimeAgo time={post.updatedAt}/></Text>
-                    </View>
-                </View>
-                <View style={styles.postContent}>
-                    <Text>{post.content}</Text>
-                    {
-                        (post.like.length > 0 || post.comment.length > 0) &&
-                        <View style={styles.postInfos}>
-                            <Caption>{post.like.length + ' likes'}</Caption>
-                            <Caption>{post.comment.length + ' comments'}</Caption>
-                        </View>
-                    }
-                    <Divider style={{marginTop: 10}}/>
+        <Pressable onPress={() => navigation.navigate('Post', {post: post})} style={styles.onePost}>
+            <Pressable
+                onPress={() =>
+                    screenName !== 'Profile' || onlineUserId === post.author._id ?
+                        navigation.navigate('Profile') :
+                        navigation.push('Profile', {userId: post.author._id})
+                }
+                style={{...styles.postAuthorData, paddingHorizontal: 20}}
+            >
+                {
+                    post.author.profile_image_url.Url !== null ?
+                        <Image source={{uri: post.author.profile_image_url.Url}}
+                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
+                        :
+                        <Avatar.Text
+                            size={35}
+                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
+                            style={{...stylesUser.avatar, ...styles.postAvatar}}
+                            color={'#fff'}
+                        />
+                }
+                <View>
+
+                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
+                    <Text style={styles.postDate}><TimeAgo time={post.updatedAt}/></Text>
                 </View>
             </Pressable>
-            <View style={stylesUser.buttonActions}>
-                <Button
-                    color={isLiked ? '#5eaade' : '#000'}
-                    icon={isLiked ? 'thumb-up' : ''}
-                    onPress={() => pushLike()}
+            <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+            >
+                <Pressable
+                    onPress={() => navigation.navigate('Post', {post: post})}
+                    style={styles.postImageScroll}
                 >
-                    Like
-                </Button>
-                <Button color={'#000'}>Comment</Button>
-                <Button color={'#000'}>Share</Button>
+                    <Image
+                        source={{uri: 'https://img.maxisciences.com/s3/frgsd/photographie/default_2020-01-02_41f960d5-236c-4a94-9222-a339e0ddd365.jpeg'}}
+                        style={styles.postImage}/>
+                    <Image
+                        source={{uri: 'https://visiter-voyager.info/wp-content/uploads/2019/05/paysage-nature-900x600.jpg'}}
+                        style={styles.postImage}/>
+                    <Image
+                        source={{uri: 'https://www.apple.com/newsroom/images/product/iphone/lifestyle/Apple_Shot-on-iPhone-Challenge-2020_Austin-Mann_01072020_big.jpg.large.jpg'}}
+                        style={styles.postImage}/>
+                </Pressable>
+            </ScrollView>
+            <View style={{...styles.postContent, paddingHorizontal: 20}}>
+                <Text>{post.content}</Text>
             </View>
-        </View>
+            <View style={{...styles.postInfos, paddingHorizontal: 20}}>
+                <TouchableOpacity style={{...styles.postInfos, marginRight: 20}} onPress={() => pushLike()}>
+                    <MaterialCommunityIcons
+                        name={isLiked ? 'heart' : 'heart-outline'} size={20}
+                        color={isLiked ? '#ef5151' : '#000'}/>
+                    <Text style={styles.postInfosText}>{post.like.length}</Text>
+                </TouchableOpacity>
+
+                <View style={styles.postInfos}>
+                    <MaterialCommunityIcons name="comment-outline" size={20} color="black"/>
+                    <Text style={styles.postInfosText}>{post.comment.length}</Text>
+                </View>
+            </View>
+        </Pressable>
     )
 }

@@ -19,7 +19,8 @@ export const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#FDFFFC',
+        backgroundColor: '#F8F8F8',
+        position: 'relative',
     },
 
     content: {
@@ -91,12 +92,28 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
     },
 
+    backBtn: {
+        backgroundColor: '#3D4958',
+        height: 40,
+        width: 40,
+        position: 'absolute',
+        top: 60,
+        left: 25,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1,
+    },
+
+    bgWhite: {
+        backgroundColor: '#fff',
+        borderRadius: 15,
+    },
+
     onePost: {
         marginVertical: 10,
-        backgroundColor: '#f8f8f8',
-        paddingHorizontal: 20,
-        paddingTop: 15,
-        paddingBottom: 5,
+        backgroundColor: '#fff',
+        paddingVertical: 15,
         borderRadius: 15,
     },
 
@@ -112,6 +129,12 @@ export const styles = StyleSheet.create({
         fontWeight: '500',
     },
 
+    postAvatar: {
+        width: 35,
+        height: 35,
+        borderRadius: 13,
+    },
+
     postDate: {
         marginLeft: 10,
         fontSize: 10,
@@ -120,14 +143,70 @@ export const styles = StyleSheet.create({
 
     postContent: {
         marginTop: 15,
+        marginBottom: 15,
     },
 
     postInfos: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'baseline',
-        marginTop: 5,
+        alignItems: 'center',
+    },
+
+    postInfosText: {
+        fontSize: 18,
+        marginHorizontal: 5,
+    },
+
+    postImage: {
+        height: 200,
+        width: 200,
+        borderRadius: 25,
+        marginRight: 10,
+        marginTop: 20,
+    },
+
+    postImageScroll:{
+        display: 'flex',
+        flexDirection: 'row',
+        marginLeft: 20,
+    },
+
+    commentInputRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginLeft: -15,
+    },
+
+    commentInput: {
+        marginTop: -10,
+        marginBottom: 20,
+        height: 'auto',
+        width: '70%',
+        marginHorizontal: 20,
+    },
+
+    commentBtn: {
+        backgroundColor: '#3D4958',
+        height: 40,
+        width: 40,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: -10,
+        marginBottom: 20,
+        marginLeft: -10,
+    },
+
+    comments: {
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+        backgroundColor: '#ececf3',
+        borderBottomRightRadius: 15,
+        borderBottomLeftRadius: 15,
+        paddingBottom: -5,
+        marginBottom: 10,
     },
 
     button: {
@@ -142,6 +221,10 @@ export const styles = StyleSheet.create({
 })
 
 export const stylesUser = StyleSheet.create({
+    avatar: {
+        backgroundColor: '#648ba5',
+    },
+
     avatarBorder: {
         marginTop: 15,
         width: 185,
@@ -152,10 +235,6 @@ export const stylesUser = StyleSheet.create({
         backgroundColor: '#dedede',
         borderRadius: 92,
         position: 'relative',
-    },
-
-    avatarImage: {
-        backgroundColor: '#648ba5',
     },
 
     avatarImageEdit: {
@@ -203,8 +282,8 @@ export const stylesUser = StyleSheet.create({
     buttonActions: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'stretch'
+        justifyContent: 'space-between',
+        alignItems: 'stretch',
     },
 
     friends: {
@@ -213,6 +292,12 @@ export const stylesUser = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'flex-start',
         marginBottom: 10,
+    },
+
+    friendAvatar: {
+        height: 55,
+        width: 55,
+        borderRadius: 20,
     },
 
     oneFriend: {

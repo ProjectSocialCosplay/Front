@@ -2,12 +2,13 @@ import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {Feather} from '@expo/vector-icons'
-import HomeScreen from "./HomeScreen"
-import LoginScreen from "./users/LoginScreen"
-import RegisterScreen from "./users/RegisterScreen"
-import ForgotPasswordScreen from "./users/ForgotPasswordScreen"
-import ProfileScreen from "./users/ProfileScreen"
-import ProfileUpdateScreen from "./users/ProfileUpdateScreen"
+import HomeScreen from "../views/HomeScreen"
+import LoginScreen from "../views/users/LoginScreen"
+import RegisterScreen from "../views/users/RegisterScreen"
+import ForgotPasswordScreen from "../views/users/ForgotPasswordScreen"
+import ProfileScreen from "../views/users/ProfileScreen"
+import ProfileUpdateScreen from "../views/users/ProfileUpdateScreen"
+import PostScreen from "../views/PostScreen"
 
 const Stack = createStackNavigator()
 
@@ -63,12 +64,12 @@ const ProfileRoutes = () => {
             <Stack.Screen
                 name="Update profile"
                 component={ProfileUpdateScreen}
-                options={{
-                    headerBackTitleVisible: false,
-                    headerStyle: {shadowColor: 'transparent'},
-                    headerTintColor: '#000',
-                    headerLeftContainerStyle: {marginLeft: 10},
-                }}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Post"
+                component={PostScreen}
+                options={{headerShown: false}}
             />
         </Stack.Navigator>
     )

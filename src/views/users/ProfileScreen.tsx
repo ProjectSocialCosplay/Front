@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {ActivityIndicator, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
+import {ActivityIndicator, Image, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
 import {styles, stylesUser} from "../../assets/Styles"
 import {fetchApi} from "../../utils/fetchApi"
 import {FontAwesome5} from '@expo/vector-icons'
@@ -109,13 +109,13 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                     <Avatar.Image
                                         size={175}
                                         source={{uri: user.profile_image_url.Url}}
-                                        style={stylesUser.avatarImage}
+                                        style={stylesUser.avatar}
                                     />
                                     :
                                     <Avatar.Text
                                         size={175}
                                         label={user.pseudo.substr(0, 1).toUpperCase()}
-                                        style={stylesUser.avatarImage}
+                                        style={stylesUser.avatar}
                                         color={'#fff'}
                                     />
                             }
@@ -198,29 +198,35 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                     <Avatar.Text
                                         size={55}
                                         label={'B'}
-                                        style={stylesUser.avatarImage}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
                                         color={'#fff'}
                                     />
                                 </View>
                                 <View style={stylesUser.oneFriend}>
-                                    <Avatar.Image
+                                    <Image
+                                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Wikipe-tan_%28Cosplay%29.jpg'}}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
+                                    {/*<Avatar.Image
                                         size={55}
                                         source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Wikipe-tan_%28Cosplay%29.jpg'}}
                                         style={stylesUser.avatarImage}
-                                    />
+                                    />*/}
                                 </View>
                                 <View style={stylesUser.oneFriend}>
-                                    <Avatar.Image
+                                    <Image
+                                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Sailor_Moon_cosplayer_at_FanimeCon_2010-05-30_3.JPG/1200px-Sailor_Moon_cosplayer_at_FanimeCon_2010-05-30_3.JPG'}}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
+                                    {/*<Avatar.Image
                                         size={55}
                                         source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Sailor_Moon_cosplayer_at_FanimeCon_2010-05-30_3.JPG/1200px-Sailor_Moon_cosplayer_at_FanimeCon_2010-05-30_3.JPG'}}
                                         style={stylesUser.avatarImage}
-                                    />
+                                    />*/}
                                 </View>
                                 <View style={stylesUser.oneFriend}>
                                     <Avatar.Text
                                         size={55}
                                         label={'J'}
-                                        style={stylesUser.avatarImage}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
                                         color={'#fff'}
                                     />
                                 </View>
@@ -228,46 +234,55 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                     <Avatar.Text
                                         size={55}
                                         label={'K'}
-                                        style={stylesUser.avatarImage}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
                                         color={'#fff'}
                                     />
                                 </View>
                                 <View style={stylesUser.oneFriend}>
-                                    <Avatar.Image
+                                    <Image
+                                        source={{uri: 'https://miro.medium.com/max/1800/1*vPOdflWxL49SryDJivPdSg.jpeg'}}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
+                                    {/*<Avatar.Image
                                         size={55}
                                         source={{uri: 'https://miro.medium.com/max/1800/1*vPOdflWxL49SryDJivPdSg.jpeg'}}
                                         style={stylesUser.avatarImage}
-                                    />
+                                    />*/}
                                 </View>
                                 <View style={stylesUser.oneFriend}>
                                     <Avatar.Text
                                         size={55}
                                         label={'A'}
-                                        style={stylesUser.avatarImage}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
                                         color={'#fff'}
                                     />
                                 </View>
                                 <View style={stylesUser.oneFriend}>
-                                    <Avatar.Image
+                                    <Image
+                                        source={{uri: 'https://images.pexels.com/photos/65767/pexels-photo-65767.jpeg?auto=compress&cs=tinysrgb&h=650&w=940'}}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
+                                    {/*<Avatar.Image
                                         size={55}
                                         source={{uri: 'https://images.pexels.com/photos/65767/pexels-photo-65767.jpeg?auto=compress&cs=tinysrgb&h=650&w=940'}}
                                         style={stylesUser.avatarImage}
-                                    />
+                                    />*/}
                                 </View>
                                 <View style={stylesUser.oneFriend}>
                                     <Avatar.Text
                                         size={55}
                                         label={'S'}
-                                        style={stylesUser.avatarImage}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
                                         color={'#fff'}
                                     />
                                 </View>
                                 <View style={stylesUser.oneFriend}>
-                                    <Avatar.Image
+                                    <Image
+                                        source={{uri: 'https://d2txbs86cmgocx.cloudfront.net/posts/70663508dfd5b9520434dab6e261e1d0c20781bd_large.jpg?1517932005'}}
+                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
+                                    {/* <Avatar.Image
                                         size={55}
                                         source={{uri: 'https://d2txbs86cmgocx.cloudfront.net/posts/70663508dfd5b9520434dab6e261e1d0c20781bd_large.jpg?1517932005'}}
                                         style={stylesUser.avatarImage}
-                                    />
+                                    />*/}
                                 </View>
                             </View>
 

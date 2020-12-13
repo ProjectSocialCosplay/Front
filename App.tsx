@@ -1,7 +1,7 @@
 import React from 'react'
 import {NavigationContainer} from "@react-navigation/native"
 import {createStackNavigator} from '@react-navigation/stack'
-import {AuthRoutes, AppRoutes} from "./src/views/Navigation";
+import {AuthRoutes, AppRoutes} from "./src/utils/Navigation";
 import SplashScreen from "./src/views/SplashScreen";
 import {StatusBar} from "react-native";
 
