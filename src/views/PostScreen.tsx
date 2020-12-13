@@ -18,7 +18,8 @@ import {TimeAgo} from "../components/TimeAgo"
 import {useNavigationState} from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
-import {Errors} from "../components/Errors";
+import {Errors} from "../components/Errors"
+import {BackButton} from "../components/BackButton"
 
 const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [post, setPost] = useState(route.params.post)
@@ -66,7 +67,9 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                             showsVerticalScrollIndicator={false}
                             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                         >
-                            <View style={{...styles.content, marginTop: 20}}>
+                            <BackButton title={post.author.pseudo + '\'s post'}/>
+
+                            <View style={{...styles.content, marginTop: 60}}>
                                 <View
                                     style={{...styles.bgWhite, borderBottomRightRadius: 0, borderBottomLeftRadius: 0}}>
                                     <Post data={post}/>

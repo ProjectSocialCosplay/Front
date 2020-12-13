@@ -88,7 +88,6 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
             enableOnAndroid={true}
         >
             <SafeAreaView style={styles.container}>
-                <BackButton/>
                 <Errors errors={errors}/>
                 {
                     isWait ?
@@ -100,6 +99,7 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
                         :
                         <>
                             <ScrollView showsVerticalScrollIndicator={false}>
+                                <BackButton/>
                                 <Pressable style={stylesUser.avatarBorder} onPress={() => {
                                     openImagePickerAsync()
                                 }}>

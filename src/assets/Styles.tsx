@@ -92,17 +92,28 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
     },
 
+    backBtnPosition: {
+        position: "absolute",
+        top: 5,
+        left: 30,
+        zIndex: 1,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
     backBtn: {
         backgroundColor: '#3D4958',
         height: 40,
         width: 40,
-        position: 'absolute',
-        top: 60,
-        left: 25,
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 1,
+    },
+
+    backBtnTitle:{
+        marginLeft: 20,
+        fontWeight: '600'
     },
 
     bgWhite: {
@@ -165,7 +176,7 @@ export const styles = StyleSheet.create({
         marginTop: 20,
     },
 
-    postImageScroll:{
+    postImageScroll: {
         display: 'flex',
         flexDirection: 'row',
         marginLeft: 20,

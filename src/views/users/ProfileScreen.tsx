@@ -7,6 +7,7 @@ import {Avatar, Title, Caption, Button} from 'react-native-paper'
 import {Post} from "../../components/Post"
 import {Errors} from "../../components/Errors"
 import {MaterialCommunityIcons} from '@expo/vector-icons'
+import {BackButton} from "../../components/BackButton"
 
 const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [user, setUser] = useState({
@@ -103,6 +104,10 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                         showsVerticalScrollIndicator={false}
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                     >
+                        {
+                            route.params?.userId && <BackButton/>
+                        }
+
                         <View style={stylesUser.avatarBorder}>
                             {
                                 user.profile_image_url.Url ?
