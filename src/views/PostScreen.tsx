@@ -6,25 +6,29 @@ import {
     Pressable,
     TextInput,
     Image,
-    Keyboard,
     RefreshControl,
     ScrollView,
-    ActivityIndicator
+    ActivityIndicator, TouchableOpacity
 } from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
 import {Post} from "../components/Post"
-import {Avatar, IconButton} from 'react-native-paper'
+import {Avatar, IconButton, Subheading} from 'react-native-paper'
 import {TimeAgo} from "../components/TimeAgo"
 import {useNavigationState} from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {Errors} from "../components/Errors"
 import {BackButton} from "../components/BackButton"
+import {fetchApi} from "../utils/fetchApi"
+import {MaterialCommunityIcons} from "@expo/vector-icons"
+import {Success} from "../components/Success"
 
 const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [post, setPost] = useState(route.params.post)
+    const [comment, setComment] = useState<string>()
     const [isWait, setIsWait] = useState<boolean>(true)
     const [errors, setErrors] = useState<string[] | null>(null)
+    const [success, setSuccess] = useState<string | null>(null)
     const [refreshing, setRefreshing] = React.useState(false)
     const [onlineUserId, setOnlineUserId] = useState<string>()
     const screenName = useNavigationState((state) => state.routes[state.index].name)
@@ -39,10 +43,54 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     }, [])
 
     useEffect(() => {
-        return navigation.addListener('focus', () => setTimeout(() => {
+        return navigation.addListener('focus', () =>
             setIsWait(false)
-        }, 500))
+        )
     }, [navigation])
+
+    const handleSubmit = async () => {
+        setErrors([])
+        let query = JSON.stringify({
+            query: `mutation{
+                createComment(comment: "${comment}", postId: "${post._id}"){
+                    _id
+                }
+            }`
+        })
+
+        try {
+            let response = await fetchApi(query)
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                setErrors(['An error has been encountered, please try again '])
+            }
+        }
+    }
+
+    const deleteComment = async (id: string) => {
+        setErrors([])
+        setSuccess(null)
+        let query = JSON.stringify({
+            query: `mutation{
+                deleteComment(commentId: "${id}"){
+                    message
+                }
+            }`
+        })
+
+        try {
+            let response = await fetchApi(query)
+            setSuccess('Comment successfully deleted')
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                setErrors(['An error has been encountered, please try again '])
+            }
+        }
+    }
 
     return (
         <KeyboardAwareScrollView
@@ -55,6 +103,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
         >
             <SafeAreaView style={styles.container}>
                 <Errors errors={errors}/>
+                <Success success={success}/>
                 {
                     isWait ?
                         <ActivityIndicator
@@ -79,372 +128,68 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                             placeholder={'Write a comment...'}
                                             multiline={true}
                                             placeholderTextColor="#8d8d8d"
-                                            autoCapitalize="none"
+                                            autoCapitalize="sentences"
                                             autoCorrect={true}
-                                            returnKeyType="done"
-                                            onSubmitEditing={() => Keyboard.dismiss()}
+                                            returnKeyType="default"
+                                            onChangeText={(comment) => setComment(comment)}
                                         />
                                         <IconButton
                                             icon="send"
                                             color="white"
                                             size={20}
                                             style={styles.commentBtn}
-                                            onPress={() => console.log('Pressed')}
+                                            onPress={() => handleSubmit()}
                                         />
                                     </View>
                                 </View>
 
                                 <View style={{...styles.comments}}>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() => navigation.push('Profile', {userId: post.author._id})}>
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() => navigation.push('Profile', {userId: post.author._id})}>
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:00:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>First comment on your post !</Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() =>
-                                                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                        navigation.push('Profile') :
-                                                        navigation.push('Profile', {userId: post.author._id})
-                                                }
-                                            >
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() =>
-                                                        screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                            navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: post.author._id})
+                                    {
+                                        post.comment.length === 0 ?
+                                            <Subheading style={{marginBottom: 20}}>No comments yet</Subheading>
+                                            :
+                                            post.comment.map((comment: any, key: any) => (
+                                                <View key={key} style={{position: 'relative'}}>
+                                                    {
+                                                        onlineUserId === comment.author._id &&
+                                                        <TouchableOpacity style={styles.commentBtnDelete}
+                                                                          onPress={() => deleteComment(comment._id)}>
+                                                            <MaterialCommunityIcons name='close' size={15}
+                                                                                    color='white'/>
+                                                        </TouchableOpacity>
                                                     }
-                                                >
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:05:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>Oh no ! I'm the second comment... It's so bad :(</Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() =>
-                                                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                        navigation.push('Profile') :
-                                                        navigation.push('Profile', {userId: post.author._id})
-                                                }
-                                            >
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() =>
-                                                        screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                            navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: post.author._id})
-                                                    }
-                                                >
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:05:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>Oh no ! I'm the second comment... It's so bad :(</Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() =>
-                                                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                        navigation.push('Profile') :
-                                                        navigation.push('Profile', {userId: post.author._id})
-                                                }
-                                            >
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() =>
-                                                        screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                            navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: post.author._id})
-                                                    }
-                                                >
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:05:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>Oh no ! I'm the second comment... It's so bad :(</Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() =>
-                                                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                        navigation.push('Profile') :
-                                                        navigation.push('Profile', {userId: post.author._id})
-                                                }
-                                            >
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() =>
-                                                        screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                            navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: post.author._id})
-                                                    }
-                                                >
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:05:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>Oh no ! I'm the second comment... It's so bad :(</Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() =>
-                                                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                        navigation.push('Profile') :
-                                                        navigation.push('Profile', {userId: post.author._id})
-                                                }
-                                            >
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() =>
-                                                        screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                            navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: post.author._id})
-                                                    }
-                                                >
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:05:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>Oh no ! I'm the second comment... It's so bad :(</Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() =>
-                                                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                        navigation.push('Profile') :
-                                                        navigation.push('Profile', {userId: post.author._id})
-                                                }
-                                            >
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() =>
-                                                        screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                            navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: post.author._id})
-                                                    }
-                                                >
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:05:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>Oh no ! I'm the second comment... It's so bad :(</Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() =>
-                                                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                        navigation.push('Profile') :
-                                                        navigation.push('Profile', {userId: post.author._id})
-                                                }
-                                            >
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() =>
-                                                        screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                            navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: post.author._id})
-                                                    }
-                                                >
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:05:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>Oh no ! I'm the second comment... It's so bad :(</Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <View style={styles.postAuthorData}>
-                                            <Pressable
-                                                onPress={() =>
-                                                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                        navigation.push('Profile') :
-                                                        navigation.push('Profile', {userId: post.author._id})
-                                                }
-                                            >
-                                                {
-                                                    post.author.profile_image_url.Url !== null ?
-                                                        <Image source={{uri: post.author.profile_image_url.Url}}
-                                                               style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                        :
-                                                        <Avatar.Text
-                                                            size={35}
-                                                            label={post.author.pseudo.substr(0, 1).toUpperCase()}
-                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                            color={'#fff'}
-                                                        />
-                                                }
-                                            </Pressable>
-                                            <View>
-                                                <Pressable
-                                                    onPress={() =>
-                                                        screenName !== 'Profile' || onlineUserId === post.author._id ?
-                                                            navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: post.author._id})
-                                                    }
-                                                >
-                                                    <Text style={styles.postAuthorName}>{post.author.pseudo}</Text>
-                                                </Pressable>
-                                                <Text style={styles.postDate}><TimeAgo
-                                                    time={'2020-12-12T21:05:12.990Z'}/></Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postContent}>
-                                            <Text>Oh no ! I'm the second comment... It's so bad :(</Text>
-                                        </View>
-                                    </View>
+                                                    <Pressable
+                                                        onPress={() => screenName !== 'Profile' || onlineUserId === comment.author._id ?
+                                                            onlineUserId === comment.author._id ? navigation.navigate('Profile') : navigation.push('Profile') :
+                                                            navigation.push('Profile', {userId: comment.author._id})}
+                                                        style={styles.postAuthorData}
+                                                    >
+                                                        {
+                                                            comment.author.profile_image_url.Url !== null ?
+                                                                <Image
+                                                                    source={{uri: comment.author.profile_image_url.Url}}
+                                                                    style={{...stylesUser.avatar, ...styles.postAvatar}}/>
+                                                                :
+                                                                <Avatar.Text
+                                                                    size={35}
+                                                                    label={comment.author.pseudo.substr(0, 1).toUpperCase()}
+                                                                    style={{...stylesUser.avatar, ...styles.postAvatar}}
+                                                                    color={'#fff'}
+                                                                />
+                                                        }
+                                                        <View>
+                                                            <Text
+                                                                style={styles.postAuthorName}>{comment.author.pseudo}</Text>
+                                                            <Text style={styles.postDate}><TimeAgo
+                                                                time={'2020-12-12T21:00:12.990Z'}/></Text>
+                                                        </View>
+                                                    </Pressable>
+                                                    <View style={styles.postContent}>
+                                                        <Text>{comment.comment}</Text>
+                                                    </View>
+                                                </View>
+                                            ))
+                                    }
                                 </View>
                             </View>
                         </ScrollView>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {ActivityIndicator, SafeAreaView, ScrollView, View, TextInput, Pressable, Text} from 'react-native'
+import {ActivityIndicator, SafeAreaView, ScrollView, View, TextInput, Pressable} from 'react-native'
 import {styles, stylesUser} from "../../assets/Styles"
 import {fetchApi} from "../../utils/fetchApi"
 import {Avatar, Button, Caption} from 'react-native-paper'
@@ -151,15 +151,12 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
                                         numberOfLines={4}
                                         scrollEnabled={false}
                                         placeholderTextColor="#8d8d8d"
-                                        autoCapitalize="none"
+                                        autoCapitalize="sentences"
                                         maxLength={150}
-                                        autoCorrect={false}
-                                        returnKeyType="done"
+                                        autoCorrect={true}
+                                        returnKeyType="default"
                                         ref={input => {
                                             inputs['bio'] = input
-                                        }}
-                                        onSubmitEditing={() => {
-                                            handleSubmit()
                                         }}
                                     />
 

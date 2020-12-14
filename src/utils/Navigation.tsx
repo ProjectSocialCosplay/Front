@@ -49,6 +49,11 @@ const HomeRoutes = () => {
                 component={ProfileScreen}
                 options={{headerShown: false}}
             />
+            <Stack.Screen
+                name="Post"
+                component={PostScreen}
+                options={{headerShown: false}}
+            />
         </Stack.Navigator>
     )
 }

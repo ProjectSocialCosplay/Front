@@ -45,9 +45,20 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                             content
                             comment{
                                 _id
+                                createdAt
+                                comment
+                                author{
+                                    _id
+                                    pseudo
+                                    profile_image_url{
+                                        Url
+                                    }
+                                }
                             }
                             like{
-                                _id
+                                user{
+                                    _id
+                                }
                             }
                             author{
                                 _id

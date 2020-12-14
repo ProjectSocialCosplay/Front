@@ -84,12 +84,23 @@ export const styles = StyleSheet.create({
         color: '#fff',
     },
 
-    errors: {
-        backgroundColor: '#e71d36',
+    snackBar: {
+        position: 'absolute',
+        bottom: 25,
         borderRadius: 15,
-        paddingHorizontal: 5,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
         width: '80%',
         alignSelf: 'center',
+        zIndex: 1,
+    },
+
+    error: {
+        backgroundColor: '#e71d36',
+    },
+
+    success: {
+        backgroundColor: '#2da243',
     },
 
     backBtnPosition: {
@@ -111,7 +122,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-    backBtnTitle:{
+    backBtnTitle: {
         marginLeft: 20,
         fontWeight: '600'
     },
@@ -208,6 +219,19 @@ export const styles = StyleSheet.create({
         marginTop: -10,
         marginBottom: 20,
         marginLeft: -10,
+    },
+
+    commentBtnDelete: {
+        backgroundColor: '#f65a5a',
+        height: 25,
+        width: 25,
+        borderRadius: 8,
+        position: 'absolute',
+        right: 0,
+        top: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1,
     },
 
     comments: {

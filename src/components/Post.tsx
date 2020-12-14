@@ -6,30 +6,62 @@ import {useNavigation, useNavigationState} from '@react-navigation/native'
 import {TimeAgo} from "./TimeAgo"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {MaterialCommunityIcons} from '@expo/vector-icons'
+import {fetchApi} from "../utils/fetchApi"
+import {Errors} from "../components/Errors"
 
 export const Post = ({data}: { data: any }) => {
     const [post, setPost] = useState(data)
     const [onlineUserId, setOnlineUserId] = useState<string>()
+    const [errors, setErrors] = useState<string[] | null>(null)
     const navigation = useNavigation<any>()
     const screenName = useNavigationState((state) => state.routes[state.index].name)
+    // @ts-ignore
+    const userId = useNavigationState((state) => state.routes[state.index].params?.userId)
 
     AsyncStorage.getItem('onlineUserId').then(value => {
         setOnlineUserId(value ? value : '')
     })
 
-    const isLiked = post.like.some((l: { _id: string }) => l._id === onlineUserId)
+    const isLiked = post.like.some((l: { user: { _id: string } }) => l.user._id === onlineUserId)
 
-    const pushLike = () => {
-        setPost({...post, like: [{_id: onlineUserId}]})
+    const handleLike = async () => {
+        setErrors([])
+        let value
+
+        if (isLiked) {
+            value = 'like(postId'
+        } else {
+            value = 'unLike(id'
+        }
+
+        let query = JSON.stringify({
+            query: `mutation{
+                ${value}: "${post._id}"){
+                    _id
+                }
+            }`
+        })
+
+        try {
+            let response = await fetchApi(query)
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                setErrors(['An error has been encountered, please try again '])
+            }
+        }
     }
 
     return (
-        <Pressable onPress={() => navigation.navigate('Post', {post: post})} style={styles.onePost}>
+        <Pressable onPress={() => screenName !== 'Post' && navigation.push('Post', {post: post})}
+                   style={styles.onePost}>
+            <Errors errors={errors}/>
             <Pressable
                 onPress={() =>
                     screenName !== 'Profile' || onlineUserId === post.author._id ?
                         navigation.navigate('Profile') :
-                        navigation.push('Profile', {userId: post.author._id})
+                        userId !== post.author._id && navigation.push('Profile', {userId: post.author._id})
                 }
                 style={{...styles.postAuthorData, paddingHorizontal: 20}}
             >
@@ -56,7 +88,7 @@ export const Post = ({data}: { data: any }) => {
                 showsHorizontalScrollIndicator={false}
             >
                 <Pressable
-                    onPress={() => navigation.navigate('Post', {post: post})}
+                    onPress={() => screenName !== 'Post' && navigation.push('Post', {post: post})}
                     style={styles.postImageScroll}
                 >
                     <Image
@@ -74,7 +106,7 @@ export const Post = ({data}: { data: any }) => {
                 <Text>{post.content}</Text>
             </View>
             <View style={{...styles.postInfos, paddingHorizontal: 20}}>
-                <TouchableOpacity style={{...styles.postInfos, marginRight: 20}} onPress={() => pushLike()}>
+                <TouchableOpacity style={{...styles.postInfos, marginRight: 20}} onPress={() => handleLike()}>
                     <MaterialCommunityIcons
                         name={isLiked ? 'heart' : 'heart-outline'} size={20}
                         color={isLiked ? '#ef5151' : '#000'}/>
