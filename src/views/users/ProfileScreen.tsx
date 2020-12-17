@@ -8,19 +8,15 @@ import {Post} from "../../components/Post"
 import {Errors} from "../../components/Errors"
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 import {BackButton} from "../../components/BackButton"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import NetInfo from '@react-native-community/netinfo'
 
 const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => {
-    const [user, setUser] = useState({
-        pseudo: '',
-        bio: '',
-        profile_image_url: {
-            Url: '',
-        },
-        posts: [],
-    })
+    const [user, setUser] = useState({pseudo: ' ', bio: ' ', profile_image_url: {Url: ' '}, posts: []})
     const [errors, setErrors] = useState<string[] | null>(null)
     const [isWait, setIsWait] = useState<boolean>(true)
     const [refreshing, setRefreshing] = React.useState(false)
+    const [didMount, setDidMount] = useState(false)
 
     const fetchData = async () => {
         setErrors([])
@@ -77,27 +73,45 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
             const response = await fetchApi(query)
             if (route.params?.userId) {
                 setUser(response.user)
+                setIsWait(false)
             } else {
-                setUser(response.getAuthUser)
+                await AsyncStorage.setItem('user', JSON.stringify(response.getAuthUser))
             }
-            setIsWait(false)
         } catch (e) {
             if (e.errors) {
                 setErrors([e.errors])
             } else {
-                setErrors(['An error has been encountered, please try again'])
+                NetInfo.fetch().then(state => {
+                    if (!state.isConnected) {
+                        setErrors(['No internet connection, please check your settings'])
+                    } else {
+                        setErrors(['An error has been encountered, please try again'])
+                    }
+                })
             }
         }
+
+        await AsyncStorage.getItem('user').then((value => {
+            if (value !== null && !route.params?.userId) {
+                setUser({...user, posts: []})
+                setUser(JSON.parse(value))
+                setIsWait(false)
+            }
+        }))
     }
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
-        await fetchData()
-        setRefreshing(false)
-    }, [])
+
+        setTimeout(() => {
+            fetchData() && setRefreshing(false)
+        }, 2000)
+    }, [refreshing])
 
     useEffect(() => {
-        return navigation.addListener('focus', () => fetchData())
+        setDidMount(true)
+        navigation.addListener('focus', () => fetchData())
+        return () => setDidMount(false)
     }, [navigation])
 
     return (
