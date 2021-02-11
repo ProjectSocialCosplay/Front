@@ -14,7 +14,7 @@ import {Button} from "react-native-paper"
 const ForgotPasswordScreen = ({navigation}: { navigation: any }) => {
     const [userEmail, setUserEmail] = useState('')
     const [user, setUser] = useState({email: ''})
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
 
     const handleSubmit = () => {
         let oops = []

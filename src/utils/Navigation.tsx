@@ -86,7 +86,7 @@ export const AppRoutes = () => {
         <Tab.Navigator
             screenOptions={({route}) => ({
                 tabBarIcon: ({color, size}) => {
-                    let iconName
+                    let iconName = ''
 
                     if (route.name === 'Home') {
                         iconName = 'home'

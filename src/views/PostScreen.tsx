@@ -27,7 +27,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [post, setPost] = useState(route.params.post)
     const [comment, setComment] = useState<string>()
     const [isWait, setIsWait] = useState<boolean>(true)
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
     const [success, setSuccess] = useState<string | null>(null)
     const [refreshing, setRefreshing] = React.useState(false)
     const [onlineUserId, setOnlineUserId] = useState<string>()

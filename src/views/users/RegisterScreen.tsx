@@ -20,7 +20,7 @@ const RegisterScreen = ({navigation}: { navigation: any }) => {
     const [userRepeatPassword, setUserRepeatPassword] = useState('')
     const [userBirthdate, setUserBirthdate] = useState(new Date())
     const [user, setUser] = useState({pseudo: '', email: '', birthdate: '', password: ''})
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
 
     const handleSubmit = () => {
         let oops = []

@@ -19,7 +19,7 @@ const LoginScreen = ({navigation}: { navigation: any }) => {
     const [userEmail, setUserEmail] = useState('')
     const [userPassword, setUserPassword] = useState('')
     const [user, setUser] = useState({email: '', password: ''})
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
 
     const handleSubmit = () => {
         let oops = []
