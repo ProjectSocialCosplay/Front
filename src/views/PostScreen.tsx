@@ -165,9 +165,9 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                         style={styles.postAuthorData}
                                                     >
                                                         {
-                                                            comment.author.profile_image_url.Url !== null ?
+                                                            comment.author.profile_image !== null ?
                                                                 <Image
-                                                                    source={{uri: comment.author.profile_image_url.Url}}
+                                                                    source={{uri: comment.author.profile_image.url}}
                                                                     style={{...stylesUser.avatar, ...styles.postAvatar}}/>
                                                                 :
                                                                 <Avatar.Text

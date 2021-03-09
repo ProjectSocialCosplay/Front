@@ -7,43 +7,58 @@ import {TimeAgo} from "./TimeAgo"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 import {fetchApi} from "../utils/fetchApi"
-import {Errors} from "../components/Errors"
+import {Errors} from "./Errors"
 
 export const Post = ({data}: { data: any }) => {
     const [post, setPost] = useState(data)
     const [onlineUserId, setOnlineUserId] = useState<string>()
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
     const navigation = useNavigation<any>()
     const screenName = useNavigationState((state) => state.routes[state.index].name)
+    const [isLiked, setIsLiked] = useState<boolean>(false)
     // @ts-ignore
     const userId = useNavigationState((state) => state.routes[state.index].params?.userId)
 
     AsyncStorage.getItem('onlineUserId').then(value => {
         setOnlineUserId(value ? value : '')
+        setIsLiked(post.likes.some((l: { author: { _id: string } }) => l.author._id === onlineUserId))
     })
-
-    const isLiked = post.like.some((l: { user: { _id: string } }) => l.user._id === onlineUserId)
 
     const handleLike = async () => {
         setErrors([])
         let value
 
-        if (isLiked) {
-            value = 'like(postId'
+        if (!isLiked) {
+            value = 'createLike'
         } else {
-            value = 'unLike(id'
+            value = 'deleteLike'
         }
 
         let query = JSON.stringify({
             query: `mutation{
-                ${value}: "${post._id}"){
-                    _id
+                ${value}(postId: "${post._id}"){
+                    post{
+                        comment{
+                            _id
+                        }
+                        likes{
+                            author{
+                                _id
+                            }
+                        }
+                    }
                 }
             }`
         })
 
         try {
             let response = await fetchApi(query)
+            if(!isLiked){
+                setPost({...post, comment: response.createLike.post.comment, likes: response.createLike.post.likes})
+            }else{
+                setPost({...post, comment: response.deleteLike.post.comment, likes: response.deleteLike.post.likes})
+            }
+            setIsLiked(post.likes.some((l: { author: { _id: string } }) => l.author._id === onlineUserId))
         } catch (e) {
             if (e.errors) {
                 setErrors([e.errors])
@@ -66,8 +81,8 @@ export const Post = ({data}: { data: any }) => {
                 style={{...styles.postAuthorData, paddingHorizontal: 20}}
             >
                 {
-                    post.author.profile_image_url.Url !== null ?
-                        <Image source={{uri: post.author.profile_image_url.Url}}
+                    post.author.profile_image !== null ?
+                        <Image source={{uri: post.author.profile_image.url}}
                                style={{...stylesUser.avatar, ...styles.postAvatar}}/>
                         :
                         <Avatar.Text
@@ -110,7 +125,7 @@ export const Post = ({data}: { data: any }) => {
                     <MaterialCommunityIcons
                         name={isLiked ? 'heart' : 'heart-outline'} size={20}
                         color={isLiked ? '#ef5151' : '#000'}/>
-                    <Text style={styles.postInfosText}>{post.like.length}</Text>
+                    <Text style={styles.postInfosText}>{post.likes.length}</Text>
                 </TouchableOpacity>
 
                 <View style={styles.postInfos}>

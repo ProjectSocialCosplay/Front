@@ -14,11 +14,11 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
     const [user, setUser] = useState({
         pseudo: '',
         bio: '',
-        profile_image_url: {
-            Url: '',
+        profile_image: {
+            url: '',
         },
     })
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
     const [isWait, setIsWait] = useState<boolean>(true)
 
     const focusTheField = (id: string) => {
@@ -39,42 +39,43 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
             return
         }
 
-        setUser({...user, profile_image_url: {Url: pickerResult.uri}})
+        setUser({...user, profile_image: {url: pickerResult.uri}})
     }
 
     const handleSubmit = () => {
         setErrors(['An error has been encountered, please try again'])
     }
 
-    useEffect(() => {
-        return navigation.addListener('focus',
-            async () => {
-                setErrors([])
+    const fetchData = async () => {
+        setErrors([])
 
-                const query = JSON.stringify({
-                    query: `query {
+        const query = JSON.stringify({
+            query: `query {
                     getAuthUser{
                         pseudo
                         bio
-                        profile_image_url{
-                            Url
+                        profile_image{
+                            url
                         }
                     }
                 }`
-                })
+        })
 
-                try {
-                    const response = await fetchApi(query)
-                    setUser(response.getAuthUser)
-                    setIsWait(false)
-                } catch (e) {
-                    if (e.errors) {
-                        setErrors([e.errors])
-                    } else {
-                        setErrors(['An error has been encountered, please try again'])
-                    }
-                }
-            })
+        try {
+            const response = await fetchApi(query)
+            setUser(response.getAuthUser)
+            setIsWait(false)
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                setErrors(['An error has been encountered, please try again'])
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetchData();
     }, [navigation])
 
     return (
@@ -104,10 +105,10 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
                                     openImagePickerAsync()
                                 }}>
                                     {
-                                        user.profile_image_url.Url ?
+                                        user.profile_image !== null ?
                                             <Avatar.Image
                                                 size={175}
-                                                source={{uri: user.profile_image_url.Url}}
+                                                source={{uri: user.profile_image.url}}
                                                 style={stylesUser.avatar}
                                             />
                                             :

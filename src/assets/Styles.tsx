@@ -86,7 +86,7 @@ export const styles = StyleSheet.create({
 
     snackBar: {
         position: 'absolute',
-        bottom: 25,
+        bottom: 10,
         borderRadius: 15,
         paddingHorizontal: 20,
         paddingVertical: 15,

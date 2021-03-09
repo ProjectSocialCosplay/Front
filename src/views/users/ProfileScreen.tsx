@@ -10,13 +10,14 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 import {BackButton} from "../../components/BackButton"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import NetInfo from '@react-native-community/netinfo'
+import {useIsFocused} from '@react-navigation/native'
 
 const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => {
-    const [user, setUser] = useState({pseudo: ' ', bio: ' ', profile_image_url: {Url: ' '}, posts: []})
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [user, setUser] = useState({pseudo: ' ', bio: ' ', profile_image: {url: ' '}, posts: []})
+    const [errors, setErrors] = useState<string[]>([])
     const [isWait, setIsWait] = useState<boolean>(true)
     const [refreshing, setRefreshing] = React.useState(false)
-    const [didMount, setDidMount] = useState(false)
+    const isFocused = useIsFocused()
 
     const fetchData = async () => {
         setErrors([])
@@ -33,8 +34,8 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                     ${request}
                         pseudo
                         bio
-                        profile_image_url{
-                            Url
+                        profile_image{
+                            url
                         }
                         posts{
                             _id
@@ -46,21 +47,21 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                 author{
                                     _id
                                     pseudo
-                                    profile_image_url{
-                                        Url
+                                    profile_image{
+                                        url
                                     }
                                 }
                             }
-                            like{
-                                user{
+                            likes{
+                                author{
                                     _id
                                 }
                             }
                             author{
                                 _id
                                 pseudo
-                                profile_image_url{
-                                    Url
+                                profile_image{
+                                    url
                                 }
                             }
                             updatedAt
@@ -109,10 +110,8 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
     }, [refreshing])
 
     useEffect(() => {
-        setDidMount(true)
-        navigation.addListener('focus', () => fetchData())
-        return () => setDidMount(false)
-    }, [navigation])
+        fetchData()
+    }, [isFocused])
 
     return (
         <SafeAreaView style={styles.container}>
@@ -135,10 +134,10 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
 
                         <View style={stylesUser.avatarBorder}>
                             {
-                                user.profile_image_url.Url ?
+                                user.profile_image !== null ?
                                     <Avatar.Image
                                         size={175}
-                                        source={{uri: user.profile_image_url.Url}}
+                                        source={{uri: user.profile_image.url}}
                                         style={stylesUser.avatar}
                                     />
                                     :
