@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native'
+import {Dimensions, StyleSheet} from 'react-native'
 
 export const styles = StyleSheet.create({
     activityIndicator: {
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     },
 
     inputArea: {
-        paddingTop: 15,
+        paddingTop: 20,
         height: 120,
     },
 
@@ -252,6 +252,38 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 15,
+    },
+
+    postModal: {
+        padding: 30,
+        position: 'relative',
+        height: '100%',
+    },
+
+    postModalInput: {
+        marginTop: 20,
+        paddingHorizontal: 0,
+        marginHorizontal: 0,
+        backgroundColor: '#fff',
+        maxHeight: 430,
+        height: 100,
+        width: 'auto'
+    },
+
+    postModalError: {
+        position: 'absolute',
+        bottom: 150,
+        width: '100%'
+    },
+
+    postModalBtn: {
+        position: 'absolute',
+        bottom: 40,
+        left: 60,
+        transform: [
+            {translateX: -32},
+        ],
+        width: '100%'
     }
 })
 

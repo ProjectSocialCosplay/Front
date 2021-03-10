@@ -11,6 +11,7 @@ import {BackButton} from "../../components/BackButton"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import NetInfo from '@react-native-community/netinfo'
 import {useIsFocused} from '@react-navigation/native'
+import {CreatePost} from "../../components/createPost";
 
 const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [user, setUser] = useState({pseudo: ' ', bio: ' ', profile_image: {url: ' '}, posts: []})
@@ -326,6 +327,8 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                             >
                                 Show all
                             </Button>
+
+                            <CreatePost/>
 
                             {
                                 user.posts.map((el, index) => {
