@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {ActivityIndicator, Image, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
+import {ActivityIndicator, Image, Pressable, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
 import {styles, stylesUser} from "../../assets/Styles"
 import {fetchApi} from "../../utils/fetchApi"
 import {FontAwesome5} from '@expo/vector-icons'
-import {Avatar, Title, Caption, Button} from 'react-native-paper'
+import {Avatar, Title, Caption, Button, Subheading} from 'react-native-paper'
 import {Post} from "../../components/Post"
 import {Errors} from "../../components/Errors"
 import {MaterialCommunityIcons} from '@expo/vector-icons'
@@ -12,13 +12,30 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import NetInfo from '@react-native-community/netinfo'
 import {useIsFocused} from '@react-navigation/native'
 import {CreatePost} from "../../components/createPost";
+import {Success} from "../../components/Success";
 
 const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => {
-    const [user, setUser] = useState({pseudo: ' ', bio: ' ', profile_image: {url: ' '}, posts: []})
+    const [user, setUser] = useState({
+        pseudo: ' ',
+        bio: ' ',
+        profile_image: {url: ' '},
+        posts: [],
+        followers: [],
+        following: []
+    })
     const [errors, setErrors] = useState<string[]>([])
+    const [success, setSuccess] = useState<string | null>(null)
     const [isWait, setIsWait] = useState<boolean>(true)
     const [refreshing, setRefreshing] = React.useState(false)
     const isFocused = useIsFocused()
+    const [isFollow, setIsFollow] = useState<boolean>(false)
+
+    AsyncStorage.getItem('onlineUser').then(value => {
+        if(value){
+            const onlineUser = JSON.parse(value)
+            setIsFollow(user.following.some((l: { follower: { _id: string } }) => l.follower._id === onlineUser._id))
+        }
+    })
 
     const fetchData = async () => {
         setErrors([])
@@ -33,6 +50,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         const query = JSON.stringify({
             query: `query {
                     ${request}
+                        _id
                         pseudo
                         bio
                         profile_image{
@@ -66,6 +84,24 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                 }
                             }
                             updatedAt
+                        }
+                        followers{
+                            follower{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                        }
+                        following{
+                            follower{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
                         }
                     }
                 }`
@@ -114,9 +150,43 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         fetchData()
     }, [isFocused])
 
+    const handleAddFriend = async () => {
+        const query = JSON.stringify(
+            {
+                query: `mutation{
+                            createFollow(followerId: "${route.params?.userId}"){
+                                _id
+                            }
+                        }`
+            })
+
+        try {
+            const response = await fetchApi(query)
+            console.log(route.params?.userId)
+            setSuccess('Friend added')
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                NetInfo.fetch().then(state => {
+                    if (!state.isConnected) {
+                        setErrors(['No internet connection, please check your settings'])
+                    } else {
+                        setErrors(['An error has been encountered, please try again'])
+                    }
+                })
+            }
+        }
+    }
+
+    const handleRemoveFriend = async () => {
+
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Errors errors={errors}/>
+            <Success success={success}/>
             {
                 isWait ?
                     <ActivityIndicator
@@ -168,21 +238,49 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                         <View style={{...styles.content, marginTop: 20}}>
                             {
                                 route.params?.userId ?
-                                    <View style={stylesUser.buttonActions}>
-                                        <Button
-                                            mode="contained"
-                                            color={'#43ab89'}
-                                            dark={true}
-                                            icon={"account-plus"}
-                                            style={{...styles.button, marginTop: 10, marginBottom: 20}}
-                                            contentStyle={styles.buttonContent}
-                                            onPress={() => {
-                                                alert('TODO: Add friend')
-                                            }}
-                                        >
-                                            Invite
-                                        </Button>
-                                        <Button
+                                    (
+                                        <View style={stylesUser.buttonActions}>
+                                            {
+                                                !isFollow ?
+                                                    <Button
+                                                        mode="contained"
+                                                        color={'#43ab89'}
+                                                        dark={true}
+                                                        icon={"account-plus"}
+                                                        style={{
+                                                            ...styles.button,
+                                                            marginBottom: 20,
+                                                            width: '60%',
+                                                            marginHorizontal: '20%'
+                                                        }}
+                                                        contentStyle={styles.buttonContent}
+                                                        onPress={() => {
+                                                            handleAddFriend()
+                                                        }}
+                                                    >
+                                                        Follow
+                                                    </Button>
+                                                    :
+                                                    <Button
+                                                        mode="contained"
+                                                        color={'#e71d36'}
+                                                        dark={true}
+                                                        icon={"account-remove"}
+                                                        style={{
+                                                            ...styles.button,
+                                                            marginBottom: 20,
+                                                            width: '60%',
+                                                            marginHorizontal: '20%'
+                                                        }}
+                                                        contentStyle={styles.buttonContent}
+                                                        onPress={() => {
+                                                            handleRemoveFriend()
+                                                        }}
+                                                    >
+                                                        Unfollow
+                                                    </Button>
+                                            }
+                                            {/*<Button
                                             mode="contained"
                                             color={'#3962d0'}
                                             style={{...styles.button, marginTop: 10, marginBottom: 20}}
@@ -205,8 +303,9 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                             }}
                                         >
                                             <MaterialCommunityIcons name="shopping" size={20} color="white"/>
-                                        </Button>
-                                    </View>
+                                        </Button>*/}
+                                        </View>
+                                    )
                                     :
                                     <Button
                                         mode="contained"
@@ -222,113 +321,101 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                     </Button>
                             }
 
-                            <Title>Friends <Caption>(39)</Caption></Title>
-                            <View style={stylesUser.friends}>
-                                <View style={stylesUser.oneFriend}>
-                                    <Avatar.Text
-                                        size={55}
-                                        label={'B'}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
-                                        color={'#fff'}
-                                    />
+                            <View style={stylesUser.subscribers}>
+                                <View style={{...styles.flex, marginRight: 15}}>
+                                    <Title>Followers <Caption>({user.followers !== null ? user.followers.length : '0'})</Caption></Title>
+                                    {
+                                        user.followers.length > 0 ?
+                                            <View style={stylesUser.friends}>
+                                                {
+                                                    user.followers.slice(0, 3).map((item: { follower: { _id: string, pseudo: string, profile_image: { url: string } | null } }, key) => (
+                                                        <Pressable key={key} onPress={() => navigation.push('Profile', {userId: item.follower._id})}>
+                                                            {
+                                                                item.follower.profile_image !== null ?
+                                                                    <View style={stylesUser.oneFriend}>
+                                                                        <Image
+                                                                            source={{uri: item.follower.profile_image.url}}
+                                                                            style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
+                                                                    </View>
+                                                                    :
+                                                                    <View style={stylesUser.oneFriend}>
+                                                                        <Avatar.Text
+                                                                            size={55}
+                                                                            label={item.follower.pseudo.charAt(0).toUpperCase()}
+                                                                            style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
+                                                                            color={'#fff'}
+                                                                        />
+                                                                    </View>
+                                                            }
+                                                        </Pressable>
+                                                    ))
+                                                }
+                                            </View>
+                                            :
+                                            <Subheading>No followers</Subheading>
+                                    }
+                                    <Button
+                                        mode="outlined"
+                                        style={{...styles.button, ...stylesUser.btnSubscribers}}
+                                        contentStyle={styles.buttonContent}
+                                        color={'#5d6d80'}
+                                        onPress={() => {
+                                            alert('TODO: Show all friends')
+                                        }}
+                                    >
+                                        Show all
+                                    </Button>
                                 </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Image
-                                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Wikipe-tan_%28Cosplay%29.jpg'}}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
-                                    {/*<Avatar.Image
-                                        size={55}
-                                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Wikipe-tan_%28Cosplay%29.jpg'}}
-                                        style={stylesUser.avatarImage}
-                                    />*/}
-                                </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Image
-                                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Sailor_Moon_cosplayer_at_FanimeCon_2010-05-30_3.JPG/1200px-Sailor_Moon_cosplayer_at_FanimeCon_2010-05-30_3.JPG'}}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
-                                    {/*<Avatar.Image
-                                        size={55}
-                                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Sailor_Moon_cosplayer_at_FanimeCon_2010-05-30_3.JPG/1200px-Sailor_Moon_cosplayer_at_FanimeCon_2010-05-30_3.JPG'}}
-                                        style={stylesUser.avatarImage}
-                                    />*/}
-                                </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Avatar.Text
-                                        size={55}
-                                        label={'J'}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
-                                        color={'#fff'}
-                                    />
-                                </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Avatar.Text
-                                        size={55}
-                                        label={'K'}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
-                                        color={'#fff'}
-                                    />
-                                </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Image
-                                        source={{uri: 'https://miro.medium.com/max/1800/1*vPOdflWxL49SryDJivPdSg.jpeg'}}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
-                                    {/*<Avatar.Image
-                                        size={55}
-                                        source={{uri: 'https://miro.medium.com/max/1800/1*vPOdflWxL49SryDJivPdSg.jpeg'}}
-                                        style={stylesUser.avatarImage}
-                                    />*/}
-                                </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Avatar.Text
-                                        size={55}
-                                        label={'A'}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
-                                        color={'#fff'}
-                                    />
-                                </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Image
-                                        source={{uri: 'https://images.pexels.com/photos/65767/pexels-photo-65767.jpeg?auto=compress&cs=tinysrgb&h=650&w=940'}}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
-                                    {/*<Avatar.Image
-                                        size={55}
-                                        source={{uri: 'https://images.pexels.com/photos/65767/pexels-photo-65767.jpeg?auto=compress&cs=tinysrgb&h=650&w=940'}}
-                                        style={stylesUser.avatarImage}
-                                    />*/}
-                                </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Avatar.Text
-                                        size={55}
-                                        label={'S'}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
-                                        color={'#fff'}
-                                    />
-                                </View>
-                                <View style={stylesUser.oneFriend}>
-                                    <Image
-                                        source={{uri: 'https://d2txbs86cmgocx.cloudfront.net/posts/70663508dfd5b9520434dab6e261e1d0c20781bd_large.jpg?1517932005'}}
-                                        style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
-                                    {/* <Avatar.Image
-                                        size={55}
-                                        source={{uri: 'https://d2txbs86cmgocx.cloudfront.net/posts/70663508dfd5b9520434dab6e261e1d0c20781bd_large.jpg?1517932005'}}
-                                        style={stylesUser.avatarImage}
-                                    />*/}
+                                <View style={{...styles.flex, marginLeft: 15}}>
+                                    <Title
+                                        style={{textAlign: 'right'}}>Followings <Caption>({user.following !== null ? user.following.length : '0'})</Caption></Title>
+                                    {
+                                        user.following.length > 0 ?
+                                            <View style={{...stylesUser.friends, alignSelf: 'flex-end'}}>
+                                                {
+                                                    user.following.slice(0, 3).map((item: { follower: { _id: string, pseudo: string, profile_image: { url: string } | null } }, key) => (
+                                                        <Pressable key={key} onPress={() => navigation.push('Profile', {userId: item.follower._id})}>
+                                                            {
+                                                                item.follower.profile_image !== null ?
+                                                                    <View style={stylesUser.oneFriend}>
+                                                                        <Image
+                                                                            source={{uri: item.follower.profile_image.url}}
+                                                                            style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
+                                                                    </View>
+                                                                    :
+                                                                    <View style={stylesUser.oneFriend}>
+                                                                        <Avatar.Text
+                                                                            size={55}
+                                                                            label={item.follower.pseudo.charAt(0).toUpperCase()}
+                                                                            style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
+                                                                            color={'#fff'}
+                                                                        />
+                                                                    </View>
+                                                            }
+                                                        </Pressable>
+                                                    ))
+                                                }
+                                            </View>
+                                            :
+                                            <Subheading style={{textAlign: 'right'}}>No followings</Subheading>
+                                    }
+                                    <Button
+                                        mode="outlined"
+                                        style={{...styles.button, ...stylesUser.btnSubscribers}}
+                                        contentStyle={styles.buttonContent}
+                                        color={'#5d6d80'}
+                                        onPress={() => {
+                                            alert('TODO: Show all friends')
+                                        }}
+                                    >
+                                        Show all
+                                    </Button>
                                 </View>
                             </View>
 
-                            <Button
-                                mode="outlined"
-                                style={{...styles.button, marginTop: 10, marginBottom: 20}}
-                                contentStyle={styles.buttonContent}
-                                color={'#5d6d80'}
-                                onPress={() => {
-                                    alert('TODO: Show all friends')
-                                }}
-                            >
-                                Show all
-                            </Button>
-
-                            <CreatePost/>
+                            {
+                                !route.params?.userId && <CreatePost/>
+                            }
 
                             {
                                 user.posts.map((el, index) => {

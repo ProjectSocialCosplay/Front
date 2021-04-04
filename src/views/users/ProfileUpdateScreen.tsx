@@ -8,18 +8,22 @@ import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {MaterialIcons} from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
 import {BackButton} from "../../components/BackButton"
+import {Success} from "../../components/Success";
 
 const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
     const [user, setUser] = useState({
         pseudo: '',
+        email: '',
         bio: '',
         profile_image: {
             url: '',
         },
     })
     const [errors, setErrors] = useState<string[]>([])
+    const [success, setSuccess] = useState<string | null>(null)
     const [isWait, setIsWait] = useState<boolean>(true)
+    const [image, setImage] = useState<string>('')
 
     const focusTheField = (id: string) => {
         inputs[id].focus()
@@ -33,17 +37,71 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
             return
         }
 
-        let pickerResult = await ImagePicker.launchImageLibraryAsync()
+        let pickerResult = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+            base64: true
+        })
 
         if (pickerResult.cancelled) {
             return
         }
 
+        if (pickerResult.base64) {
+            setImage(pickerResult.base64)
+        }
+
         setUser({...user, profile_image: {url: pickerResult.uri}})
     }
 
-    const handleSubmit = () => {
-        setErrors(['An error has been encountered, please try again'])
+    const handleSubmit = async () => {
+        if (!user.pseudo) {
+            setErrors(['Please enter a pseudo'])
+        }
+
+        if (image) {
+            const query = JSON.stringify({
+                query: `mutation{
+                            uploadProfileImage(base64str: "${image}"){
+                                key
+                            }
+                        }`
+            })
+
+            try {
+                await fetchApi(query)
+                setSuccess('Picture upload')
+            } catch (e) {
+                if (e.errors) {
+                    setErrors([e.errors])
+                } else {
+                    setErrors(['An error has been encountered, please try again'])
+                }
+            }
+        }
+
+        /* TODO: Add bio to update */
+
+        const query_2 = JSON.stringify({
+            query: `mutation{
+                        updateUser(pseudo: "${user.pseudo}", email: "${user.email}"){
+                            _id
+                        }
+                    }`
+        })
+
+        try {
+            await fetchApi(query_2)
+            setSuccess('Profile updated successfully')
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                setErrors(['An error has been encountered, please try again'])
+            }
+        }
     }
 
     const fetchData = async () => {
@@ -53,6 +111,7 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
             query: `query {
                     getAuthUser{
                         pseudo
+                        email
                         bio
                         profile_image{
                             url
@@ -84,12 +143,13 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps='handled'
             scrollEventThrottle={16}
-            extraHeight={175}
+            extraHeight={75}
             scrollEnabled={false}
             enableOnAndroid={true}
         >
             <SafeAreaView style={styles.container}>
                 <Errors errors={errors}/>
+                <Success success={success}/>
                 {
                     isWait ?
                         <ActivityIndicator
@@ -138,6 +198,23 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
                                         autoCapitalize="none"
                                         autoCorrect={false}
                                         returnKeyType="next"
+                                        onSubmitEditing={() => {
+                                            focusTheField('email')
+                                        }}
+                                    />
+
+                                    <TextInput
+                                        style={styles.input}
+                                        onChangeText={(email) => setUser({...user, email: email})}
+                                        value={user.email}
+                                        placeholder="E-mail"
+                                        placeholderTextColor="#8d8d8d"
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        returnKeyType="next"
+                                        ref={input => {
+                                            inputs['email'] = input
+                                        }}
                                         onSubmitEditing={() => {
                                             focusTheField('bio')
                                         }}

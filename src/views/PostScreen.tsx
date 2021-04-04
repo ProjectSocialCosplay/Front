@@ -33,8 +33,8 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [onlineUserId, setOnlineUserId] = useState<string>()
     const screenName = useNavigationState((state) => state.routes[state.index].name)
 
-    AsyncStorage.getItem('onlineUserId').then(value => {
-        setOnlineUserId(value ? value : '')
+    AsyncStorage.getItem('onlineUser').then(value => {
+        setOnlineUserId(value ? JSON.parse(value)._id : '')
     })
 
     const onRefresh = useCallback(async () => {

@@ -19,8 +19,8 @@ export const Post = ({data}: { data: any }) => {
     // @ts-ignore
     const userId = useNavigationState((state) => state.routes[state.index].params?.userId)
 
-    AsyncStorage.getItem('onlineUserId').then(value => {
-        setOnlineUserId(value ? value : '')
+    AsyncStorage.getItem('onlineUser').then(value => {
+        setOnlineUserId(value ? JSON.parse(value)._id: '')
         setIsLiked(post.likes.some((l: { author: { _id: string } }) => l.author._id === onlineUserId))
     })
 

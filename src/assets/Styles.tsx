@@ -1,6 +1,10 @@
 import {Dimensions, StyleSheet} from 'react-native'
 
 export const styles = StyleSheet.create({
+    flex: {
+        flex: 1,
+    },
+
     activityIndicator: {
         alignItems: 'center',
         height: 80,
@@ -266,7 +270,7 @@ export const styles = StyleSheet.create({
         marginHorizontal: 0,
         backgroundColor: '#fff',
         maxHeight: 430,
-        height: 100,
+        minHeight: 200,
         width: 'auto'
     },
 
@@ -339,18 +343,33 @@ export const stylesUser = StyleSheet.create({
     bio: {
         marginTop: 25,
         marginHorizontal: 30,
-        backgroundColor: '#e3e3e3',
+        backgroundColor: '#ececec',
         padding: 20,
         fontSize: 15,
         borderRadius: 15,
         overflow: 'hidden',
+        textAlign: 'center',
     },
 
     buttonActions: {
+        // display: 'flex',
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
+        // alignItems: 'stretch',
+    },
+
+    subscribers: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'stretch',
+        height: 150,
+        marginBottom: 20,
+    },
+
+    btnSubscribers: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%'
     },
 
     friends: {
@@ -362,13 +381,14 @@ export const stylesUser = StyleSheet.create({
     },
 
     friendAvatar: {
-        height: 55,
-        width: 55,
+        height: 50,
+        width: 50,
         borderRadius: 20,
     },
 
     oneFriend: {
-        flexBasis: '20%',
         paddingVertical: 5,
+        flexGrow: 1,
+        marginHorizontal: 2
     },
 })

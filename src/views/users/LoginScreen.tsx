@@ -52,14 +52,67 @@ const LoginScreen = ({navigation}: { navigation: any }) => {
 
                 query = JSON.stringify({
                     query: `query {
-                        getAuthUser{
-                            _id
+                    getAuthUser{
+                        _id
+                        pseudo
+                        bio
+                        profile_image{
+                            url
                         }
-                    }`
+                        posts{
+                            _id
+                            content
+                            comment{
+                                _id
+                                createdAt
+                                comment
+                                author{
+                                    _id
+                                    pseudo
+                                    profile_image{
+                                        url
+                                    }
+                                }
+                            }
+                            likes{
+                                author{
+                                    _id
+                                }
+                            }
+                            author{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                            updatedAt
+                        }
+                        followers{
+                            follower{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                        }
+                        following{
+                            follower{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                        }
+                    }
+                }`
                 })
 
+
                 response = await fetchApi(query)
-                await AsyncStorage.setItem('onlineUserId', response.getAuthUser._id)
+                await AsyncStorage.setItem('onlineUser', JSON.stringify(response.getAuthUser))
 
                 navigation.reset({
                         index: 0,
