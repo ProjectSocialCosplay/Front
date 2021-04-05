@@ -14,12 +14,12 @@ import {fetchApi} from "../../utils/fetchApi"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {Button} from "react-native-paper"
 
-const Login = ({navigation}: { navigation: any }) => {
+const LoginScreen = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
     const [userEmail, setUserEmail] = useState('')
     const [userPassword, setUserPassword] = useState('')
     const [user, setUser] = useState({email: '', password: ''})
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
 
     const handleSubmit = () => {
         let oops = []
@@ -38,7 +38,7 @@ const Login = ({navigation}: { navigation: any }) => {
     useEffect(() => {
         const fetchData = async () => {
             setErrors([])
-            const query = JSON.stringify({
+            let query = JSON.stringify({
                 query: `query {
                 login( email: "${user.email}", password: "${user.password}" ) {
                         token
@@ -47,8 +47,73 @@ const Login = ({navigation}: { navigation: any }) => {
             })
 
             try {
-                const response = await fetchApi(query)
+                let response = await fetchApi(query)
                 await AsyncStorage.setItem('token', response.login.token)
+
+                query = JSON.stringify({
+                    query: `query {
+                    getAuthUser{
+                        _id
+                        pseudo
+                        bio
+                        profile_image{
+                            url
+                        }
+                        posts{
+                            _id
+                            content
+                            comment{
+                                _id
+                                createdAt
+                                comment
+                                author{
+                                    _id
+                                    pseudo
+                                    profile_image{
+                                        url
+                                    }
+                                }
+                            }
+                            likes{
+                                author{
+                                    _id
+                                }
+                            }
+                            author{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                            updatedAt
+                        }
+                        followers{
+                            follower{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                        }
+                        following{
+                            follower{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                        }
+                    }
+                }`
+                })
+
+
+                response = await fetchApi(query)
+                await AsyncStorage.setItem('onlineUser', JSON.stringify(response.getAuthUser))
+
                 navigation.reset({
                         index: 0,
                         routes: [{name: 'AppRoutes'}],
@@ -159,4 +224,4 @@ const Login = ({navigation}: { navigation: any }) => {
     )
 }
 
-export default Login
+export default LoginScreen

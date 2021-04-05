@@ -3,7 +3,7 @@ import {Text, SafeAreaView, Button} from 'react-native'
 import {styles} from "../assets/Styles"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-const Homepage = ({navigation}: { navigation: any }) => {
+const HomeScreen = ({navigation}: { navigation: any }) => {
     const logOut = async () => {
         await AsyncStorage.removeItem('token')
         navigation.replace('AuthRoutes')
@@ -17,4 +17,4 @@ const Homepage = ({navigation}: { navigation: any }) => {
     )
 }
 
-export default Homepage
+export default HomeScreen

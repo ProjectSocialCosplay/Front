@@ -2,12 +2,14 @@ import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {Feather} from '@expo/vector-icons'
-import Homepage from "./Homepage"
-import Login from "./users/Login"
-import Register from "./users/Register"
-import ForgotPassword from "./users/ForgotPassword"
-import Profile from "./users/Profile"
-import ProfileUpdate from "./users/ProfileUpdate"
+import HomeScreen from "../views/HomeScreen"
+import LoginScreen from "../views/users/LoginScreen"
+import RegisterScreen from "../views/users/RegisterScreen"
+import ForgotPasswordScreen from "../views/users/ForgotPasswordScreen"
+import ProfileScreen from "../views/users/ProfileScreen"
+import ProfileUpdateScreen from "../views/users/ProfileUpdateScreen"
+import PostScreen from "../views/PostScreen"
+import FollowScreen from "../views/users/FollowScreen";
 
 const Stack = createStackNavigator()
 
@@ -16,17 +18,17 @@ export const AuthRoutes = () => {
         <Stack.Navigator initialRouteName="Sign in">
             <Stack.Screen
                 name="Sign in"
-                component={Login}
+                component={LoginScreen}
                 options={{headerShown: false}}
             />
             <Stack.Screen
                 name="Sign up"
-                component={Register}
+                component={RegisterScreen}
                 options={{headerShown: false}}
             />
             <Stack.Screen
                 name="Forgot your password"
-                component={ForgotPassword}
+                component={ForgotPasswordScreen}
                 options={{headerShown: false}}
             />
         </Stack.Navigator>
@@ -40,12 +42,22 @@ const HomeRoutes = () => {
         <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
                 name="Home"
-                component={Homepage}
+                component={HomeScreen}
                 options={{headerShown: false}}
             />
             <Stack.Screen
                 name="Profile"
-                component={Profile}
+                component={ProfileScreen}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Post"
+                component={PostScreen}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Follow"
+                component={FollowScreen}
                 options={{headerShown: false}}
             />
         </Stack.Navigator>
@@ -57,18 +69,23 @@ const ProfileRoutes = () => {
         <Stack.Navigator initialRouteName="Profile">
             <Stack.Screen
                 name="Profile"
-                component={Profile}
+                component={ProfileScreen}
                 options={{headerShown: false}}
             />
             <Stack.Screen
                 name="Update profile"
-                component={ProfileUpdate}
-                options={{
-                    headerBackTitleVisible: false,
-                    headerStyle: {shadowColor: 'transparent'},
-                    headerTintColor: '#000',
-                    headerLeftContainerStyle: {marginLeft: 10},
-                }}
+                component={ProfileUpdateScreen}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Post"
+                component={PostScreen}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Follow"
+                component={FollowScreen}
+                options={{headerShown: false}}
             />
         </Stack.Navigator>
     )
@@ -80,7 +97,7 @@ export const AppRoutes = () => {
         <Tab.Navigator
             screenOptions={({route}) => ({
                 tabBarIcon: ({color, size}) => {
-                    let iconName
+                    let iconName = ''
 
                     if (route.name === 'Home') {
                         iconName = 'home'

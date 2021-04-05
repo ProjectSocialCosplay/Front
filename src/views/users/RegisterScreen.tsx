@@ -12,7 +12,7 @@ import {fetchApi} from "../../utils/fetchApi"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {Button} from "react-native-paper"
 
-const Register = ({navigation}: { navigation: any }) => {
+const RegisterScreen = ({navigation}: { navigation: any }) => {
     const inputs: any = {}
     const [userPseudo, setUserPseudo] = useState('')
     const [userEmail, setUserEmail] = useState('')
@@ -20,7 +20,7 @@ const Register = ({navigation}: { navigation: any }) => {
     const [userRepeatPassword, setUserRepeatPassword] = useState('')
     const [userBirthdate, setUserBirthdate] = useState(new Date())
     const [user, setUser] = useState({pseudo: '', email: '', birthdate: '', password: ''})
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
 
     const handleSubmit = () => {
         let oops = []
@@ -194,4 +194,4 @@ const Register = ({navigation}: { navigation: any }) => {
     )
 }
 
-export default Register
+export default RegisterScreen

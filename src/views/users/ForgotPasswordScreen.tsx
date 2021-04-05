@@ -11,10 +11,10 @@ import {Errors} from "../../components/Errors"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {Button} from "react-native-paper"
 
-const ForgotPassword = ({navigation}: { navigation: any }) => {
+const ForgotPasswordScreen = ({navigation}: { navigation: any }) => {
     const [userEmail, setUserEmail] = useState('')
     const [user, setUser] = useState({email: ''})
-    const [errors, setErrors] = useState<string[] | null>(null)
+    const [errors, setErrors] = useState<string[]>([])
 
     const handleSubmit = () => {
         let oops = []
@@ -117,4 +117,4 @@ const ForgotPassword = ({navigation}: { navigation: any }) => {
     )
 }
 
-export default ForgotPassword
+export default ForgotPasswordScreen
