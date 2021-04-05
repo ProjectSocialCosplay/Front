@@ -362,14 +362,7 @@ export const stylesUser = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        height: 150,
         marginBottom: 20,
-    },
-
-    btnSubscribers: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%'
     },
 
     friends: {
@@ -378,12 +371,6 @@ export const stylesUser = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'flex-start',
         marginBottom: 10,
-    },
-
-    friendAvatar: {
-        height: 50,
-        width: 50,
-        borderRadius: 20,
     },
 
     oneFriend: {

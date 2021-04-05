@@ -1,12 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {ActivityIndicator, Image, Pressable, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
+import {ActivityIndicator, Pressable, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
 import {styles, stylesUser} from "../../assets/Styles"
 import {fetchApi} from "../../utils/fetchApi"
 import {FontAwesome5} from '@expo/vector-icons'
-import {Avatar, Title, Caption, Button, Subheading} from 'react-native-paper'
+import {Avatar, Button, Subheading, Title} from 'react-native-paper'
 import {Post} from "../../components/Post"
 import {Errors} from "../../components/Errors"
-import {MaterialCommunityIcons} from '@expo/vector-icons'
 import {BackButton} from "../../components/BackButton"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import NetInfo from '@react-native-community/netinfo'
@@ -29,11 +28,17 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
     const [refreshing, setRefreshing] = React.useState(false)
     const isFocused = useIsFocused()
     const [isFollow, setIsFollow] = useState<boolean>(false)
+    const [followId, setFollowId] = useState<string>('')
 
     AsyncStorage.getItem('onlineUser').then(value => {
-        if(value){
+        if (value) {
             const onlineUser = JSON.parse(value)
-            setIsFollow(user.following.some((l: { follower: { _id: string } }) => l.follower._id === onlineUser._id))
+            setIsFollow(user.followers.some((l: { user: { _id: string } }) => l.user._id === onlineUser._id))
+            const followUser = user.followers.find((l: { user: { _id: string } }) => l.user._id === onlineUser._id);
+            if (followUser) {
+                const {_id} = followUser;
+                setFollowId(_id)
+            }
         }
     })
 
@@ -87,6 +92,14 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                         }
                         followers{
                             _id
+                            user{
+                                _id
+                                pseudo
+                                bio
+                                profile_image{
+                                    url
+                                }
+                            }
                             follower{
                                 _id
                                 pseudo
@@ -98,6 +111,14 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                         }
                         following{
                             _id
+                            user{
+                                _id
+                                pseudo
+                                bio
+                                profile_image{
+                                    url
+                                }
+                            }
                             follower{
                                 _id
                                 pseudo
@@ -165,8 +186,8 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
             })
 
         try {
-            const response = await fetchApi(query)
-            console.log(route.params?.userId)
+            await fetchApi(query)
+            await fetchData()
             setSuccess('Follow successfully')
         } catch (e) {
             if (e.errors) {
@@ -183,8 +204,33 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         }
     }
 
-    const handleRemoveFriend = async () => {
+    const handleRemoveFriend = async (id: string) => {
+        const query = JSON.stringify(
+            {
+                query: `mutation{
+                            deleteFollow(id: "${id}"){
+                                _id
+                            }
+                        }`
+            })
 
+        try {
+            await fetchApi(query)
+            await fetchData()
+            setSuccess('Unfollow successfully')
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                NetInfo.fetch().then(state => {
+                    if (!state.isConnected) {
+                        setErrors(['No internet connection, please check your settings'])
+                    } else {
+                        setErrors(['An error has been encountered, please try again'])
+                    }
+                })
+            }
+        }
     }
 
     return (
@@ -258,8 +304,8 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                                             marginHorizontal: '20%'
                                                         }}
                                                         contentStyle={styles.buttonContent}
-                                                        onPress={() => {
-                                                            handleAddFriend()
+                                                        onPress={async () => {
+                                                            await handleAddFriend()
                                                         }}
                                                     >
                                                         Follow
@@ -277,8 +323,8 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                                             marginHorizontal: '20%'
                                                         }}
                                                         contentStyle={styles.buttonContent}
-                                                        onPress={() => {
-                                                            handleRemoveFriend()
+                                                        onPress={async () => {
+                                                            await handleRemoveFriend(followId)
                                                         }}
                                                     >
                                                         Unfollow
@@ -326,91 +372,22 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                             }
 
                             <View style={stylesUser.subscribers}>
-                                <View style={{...styles.flex, marginRight: 15}}>
-                                    <Title>Followers <Caption>({user.followers !== null ? user.followers.length : '0'})</Caption></Title>
-                                    {
-                                        user.followers.length > 0 ?
-                                            <View style={stylesUser.friends}>
-                                                {
-                                                    user.followers.slice(0, 3).map((item: { follower: { _id: string, pseudo: string, profile_image: { url: string } | null } }, key) => (
-                                                        <Pressable key={key} onPress={() => navigation.push('Profile', {userId: item.follower._id})}>
-                                                            {
-                                                                item.follower.profile_image !== null ?
-                                                                    <View style={stylesUser.oneFriend}>
-                                                                        <Image
-                                                                            source={{uri: item.follower.profile_image.url}}
-                                                                            style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
-                                                                    </View>
-                                                                    :
-                                                                    <View style={stylesUser.oneFriend}>
-                                                                        <Avatar.Text
-                                                                            size={55}
-                                                                            label={item.follower.pseudo.charAt(0).toUpperCase()}
-                                                                            style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
-                                                                            color={'#fff'}
-                                                                        />
-                                                                    </View>
-                                                            }
-                                                        </Pressable>
-                                                    ))
-                                                }
-                                            </View>
-                                            :
-                                            <Subheading>No followers</Subheading>
-                                    }
-                                    <Button
-                                        mode="outlined"
-                                        style={{...styles.button, ...stylesUser.btnSubscribers}}
-                                        contentStyle={styles.buttonContent}
-                                        color={'#5d6d80'}
-                                        onPress={() => navigation.push('Follow', {username: user.pseudo, follow: user.followers, name: 'followers'})}
-                                    >
-                                        Show all
-                                    </Button>
-                                </View>
-                                <View style={{...styles.flex, marginLeft: 15}}>
-                                    <Title
-                                        style={{textAlign: 'right'}}>Followings <Caption>({user.following !== null ? user.following.length : '0'})</Caption></Title>
-                                    {
-                                        user.following.length > 0 ?
-                                            <View style={{...stylesUser.friends, alignSelf: 'flex-end'}}>
-                                                {
-                                                    user.following.slice(0, 3).map((item: { follower: { _id: string, pseudo: string, profile_image: { url: string } | null } }, key) => (
-                                                        <Pressable key={key} onPress={() => navigation.push('Profile', {userId: item.follower._id})}>
-                                                            {
-                                                                item.follower.profile_image !== null ?
-                                                                    <View style={stylesUser.oneFriend}>
-                                                                        <Image
-                                                                            source={{uri: item.follower.profile_image.url}}
-                                                                            style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}/>
-                                                                    </View>
-                                                                    :
-                                                                    <View style={stylesUser.oneFriend}>
-                                                                        <Avatar.Text
-                                                                            size={55}
-                                                                            label={item.follower.pseudo.charAt(0).toUpperCase()}
-                                                                            style={{...stylesUser.avatar, ...stylesUser.friendAvatar}}
-                                                                            color={'#fff'}
-                                                                        />
-                                                                    </View>
-                                                            }
-                                                        </Pressable>
-                                                    ))
-                                                }
-                                            </View>
-                                            :
-                                            <Subheading style={{textAlign: 'right'}}>No followings</Subheading>
-                                    }
-                                    <Button
-                                        mode="outlined"
-                                        style={{...styles.button, ...stylesUser.btnSubscribers}}
-                                        contentStyle={styles.buttonContent}
-                                        color={'#5d6d80'}
-                                        onPress={() => navigation.push('Follow', {username: user.pseudo, follow: user.following, name: 'followings'})}
-                                    >
-                                        Show all
-                                    </Button>
-                                </View>
+                                <Pressable onPress={() => navigation.push('Follow', {
+                                    username: user.pseudo,
+                                    follow: user.followers,
+                                    name: 'followers'
+                                })} style={{...styles.flex, alignItems: 'center'}}>
+                                    <Subheading>Followers</Subheading>
+                                    <Title>{user.followers !== null ? user.followers.length : '0'}</Title>
+                                </Pressable>
+                                <Pressable onPress={() => navigation.push('Follow', {
+                                    username: user.pseudo,
+                                    follow: user.following,
+                                    name: 'following'
+                                })} style={{...styles.flex, alignItems: 'center'}}>
+                                    <Subheading>Followings</Subheading>
+                                    <Title>{user.following !== null ? user.following.length : '0'}</Title>
+                                </Pressable>
                             </View>
 
                             {

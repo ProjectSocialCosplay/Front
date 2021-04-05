@@ -23,7 +23,7 @@ export const Post = ({data}: { data: any }) => {
     const userId = useNavigationState((state) => state.routes[state.index].params?.userId)
 
     AsyncStorage.getItem('onlineUser').then(value => {
-        setOnlineUserId(value ? JSON.parse(value)._id: '')
+        setOnlineUserId(value ? JSON.parse(value)._id : '')
         setIsLiked(post.likes.some((l: { author: { _id: string } }) => l.author._id === onlineUserId))
     })
 
@@ -61,10 +61,14 @@ export const Post = ({data}: { data: any }) => {
 
         try {
             let response = await fetchApi(query)
-            if(!isLiked){
+            if (!isLiked) {
                 setPost({...post, comment: response.createLike.post.comment, likes: response.createLike.post.likes})
-            }else{
+                setNbLike(response.createLike.post.likes.length)
+                setNbComment(response.createLike.post.comment.length)
+            } else {
                 setPost({...post, comment: response.deleteLike.post.comment, likes: response.deleteLike.post.likes})
+                setNbLike(response.deleteLike.post.likes.length)
+                setNbComment(response.deleteLike.post.comment.length)
             }
             setIsLiked(post.likes.some((l: { author: { _id: string } }) => l.author._id === onlineUserId))
         } catch (e) {
