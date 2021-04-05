@@ -20,7 +20,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         profile_image: {url: ' '},
         posts: [],
         followers: [],
-        following: []
+        following: [],
     })
     const [errors, setErrors] = useState<string[]>([])
     const [success, setSuccess] = useState<string | null>(null)
@@ -66,15 +66,6 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                             content
                             comment{
                                 _id
-                                createdAt
-                                comment
-                                author{
-                                    _id
-                                    pseudo
-                                    profile_image{
-                                        url
-                                    }
-                                }
                             }
                             likes{
                                 author{
@@ -128,6 +119,26 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                 }
                             }
                         }
+                        feed{
+                            _id
+                            content
+                            comment{
+                                _id
+                            }
+                            likes{
+                                author{
+                                    _id
+                                }
+                            }
+                            author{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                            updatedAt
+                        }
                     }
                 }`
         })
@@ -138,7 +149,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                 setUser(response.user)
                 setIsWait(false)
             } else {
-                await AsyncStorage.setItem('user', JSON.stringify(response.getAuthUser))
+                await AsyncStorage.setItem('onlineUser', JSON.stringify(response.getAuthUser))
             }
         } catch (e) {
             if (e.errors) {
@@ -154,7 +165,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
             }
         }
 
-        await AsyncStorage.getItem('user').then((value => {
+        await AsyncStorage.getItem('onlineUser').then((value => {
             if (value !== null && !route.params?.userId) {
                 setUser({...user, posts: []})
                 setUser(JSON.parse(value))

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Image, Pressable, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
 import {Avatar} from "react-native-paper"
-import {useIsFocused, useNavigation, useNavigationState} from '@react-navigation/native'
+import {useNavigation, useNavigationState} from '@react-navigation/native'
 import {TimeAgo} from "./TimeAgo"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {MaterialCommunityIcons} from '@expo/vector-icons'
@@ -18,9 +18,7 @@ export const Post = ({data}: { data: any }) => {
     const [isLiked, setIsLiked] = useState<boolean>(false)
     const [nbLike, setNbLike] = useState(data.likes.length);
     const [nbComment, setNbComment] = useState(data.comment.length);
-    const isFocused = useIsFocused()
     // @ts-ignore
-    const userId = useNavigationState((state) => state.routes[state.index].params?.userId)
 
     AsyncStorage.getItem('onlineUser').then(value => {
         setOnlineUserId(value ? JSON.parse(value)._id : '')
@@ -85,11 +83,7 @@ export const Post = ({data}: { data: any }) => {
                    style={styles.onePost}>
             <Errors errors={errors}/>
             <Pressable
-                onPress={() =>
-                    screenName !== 'Profile' || onlineUserId === post.author._id ?
-                        navigation.navigate('Profile') :
-                        userId !== post.author._id && navigation.push('Profile', {userId: post.author._id})
-                }
+                onPress={() => screenName !== 'Post' && navigation.push('Post', {post: post._id})}
                 style={{...styles.postAuthorData, paddingHorizontal: 20}}
             >
                 {

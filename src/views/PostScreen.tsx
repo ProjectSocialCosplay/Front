@@ -8,13 +8,13 @@ import {
     Image,
     RefreshControl,
     ScrollView,
-    ActivityIndicator, TouchableOpacity, Alert
+    ActivityIndicator, TouchableOpacity
 } from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
 import {Post} from "../components/Post"
 import {Avatar, IconButton, Subheading} from 'react-native-paper'
 import {TimeAgo} from "../components/TimeAgo"
-import {useIsFocused, useNavigationState} from "@react-navigation/native"
+import {useIsFocused} from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {Errors} from "../components/Errors"
@@ -121,7 +121,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
         })
 
         try {
-            let response = await fetchApi(query)
+            await fetchApi(query)
             setComment('')
             await fetchData()
         } catch (e) {
@@ -145,7 +145,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
         })
 
         try {
-            let response = await fetchApi(query)
+            await fetchApi(query)
             setSuccess('Comment successfully deleted')
             await fetchData()
         } catch (e) {
@@ -170,6 +170,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                 <Errors errors={errors}/>
                 <Success success={success}/>
                 {
+                    /*TODO: Suppression du post */
                     isWait ?
                         <ActivityIndicator
                             color="#8d8d8d"

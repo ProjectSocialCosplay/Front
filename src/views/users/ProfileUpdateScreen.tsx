@@ -161,8 +161,8 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
                         <>
                             <ScrollView showsVerticalScrollIndicator={false}>
                                 <BackButton/>
-                                <Pressable style={stylesUser.avatarBorder} onPress={() => {
-                                    openImagePickerAsync()
+                                <Pressable style={stylesUser.avatarBorder} onPress={async () => {
+                                    await openImagePickerAsync()
                                 }}>
                                     {
                                         user.profile_image !== null ?
