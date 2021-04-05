@@ -40,10 +40,6 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [onlineUserId, setOnlineUserId] = useState<string>()
     const isFocused = useIsFocused()
 
-    AsyncStorage.getItem('onlineUser').then(value => {
-        setOnlineUserId(value ? JSON.parse(value)._id : '')
-    })
-
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
 
@@ -108,6 +104,9 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     }
 
     useEffect(() => {
+        AsyncStorage.getItem('onlineUser').then(value => {
+            setOnlineUserId(value ? JSON.parse(value)._id : '')
+        })
         fetchData()
     }, [isFocused])
 

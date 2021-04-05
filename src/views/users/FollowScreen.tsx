@@ -1,6 +1,6 @@
 import {Image, SafeAreaView, ScrollView, View} from "react-native";
 import {styles, stylesUser} from "../../assets/Styles";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {BackButton} from "../../components/BackButton";
 import {Subheading, Title, Avatar, Caption, IconButton, Text} from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,6 +8,7 @@ import {fetchApi} from "../../utils/fetchApi";
 import NetInfo from "@react-native-community/netinfo";
 import {Errors} from "../../components/Errors";
 import {Success} from "../../components/Success";
+import {useIsFocused} from "@react-navigation/native";
 
 const FollowScreen = ({route}: { route: any }) => {
     const [onlineUser, setOnlineUser] = useState({
@@ -16,13 +17,17 @@ const FollowScreen = ({route}: { route: any }) => {
     })
     const [errors, setErrors] = useState<string[]>([])
     const [success, setSuccess] = useState<string | null>(null)
-    const [follow, setFollow] = useState<object[]>(route.params.follow)
+    const [follow, setFollow] = useState<object[]>([])
+    const isFocused = useIsFocused()
 
-    AsyncStorage.getItem('onlineUser').then(value => {
-        if (value) {
-            setOnlineUser(JSON.parse(value))
-        }
-    })
+    useEffect(() => {
+        AsyncStorage.getItem('onlineUser').then(value => {
+            if (value) {
+                setOnlineUser(JSON.parse(value))
+            }
+        })
+        setFollow(route.params.follow)
+    }, [isFocused])
 
     const updateList = async () => {
         let request = route.params.name === 'followers' ? 'followers' : 'following'
