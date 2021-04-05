@@ -186,7 +186,9 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                 </Pressable>
                                                 <View style={{...styles.flex}}>
                                                     {
-                                                        onlineUser.following.some((l: { user: { _id: string } }) => l.user._id === item.user._id) ?
+                                                        onlineUser.following.find((l: { follower: { _id: string } }) => {
+                                                            return l.follower._id === item.user._id
+                                                        }) === undefined ?
                                                             <IconButton
                                                                 icon="account-plus"
                                                                 color="white"

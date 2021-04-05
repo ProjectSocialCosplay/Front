@@ -83,7 +83,7 @@ export const Post = ({data}: { data: any }) => {
                    style={styles.onePost}>
             <Errors errors={errors}/>
             <Pressable
-                onPress={() => screenName !== 'Post' && navigation.push('Post', {post: post._id})}
+                onPress={() => onlineUserId !== post.author._id && navigation.push('Profile', {'userId': post.author._id})}
                 style={{...styles.postAuthorData, paddingHorizontal: 20}}
             >
                 {
