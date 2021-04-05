@@ -36,7 +36,7 @@ export const CreatePost = () => {
     return (
         <>
             <Button mode="contained"
-                    style={{...styles.button}}
+                    style={{...styles.button, marginBottom: 10}}
                     contentStyle={styles.buttonContent}
                     color={'#e9e9e9'}
                     onPress={() => setVisible(true)}

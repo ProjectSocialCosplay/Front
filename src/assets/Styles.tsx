@@ -391,4 +391,24 @@ export const stylesUser = StyleSheet.create({
         flexGrow: 1,
         marginHorizontal: 2
     },
+
+    followAvatar: {
+        height: 70,
+        width: 70,
+        borderRadius: 25,
+    },
+
+    followInfo: {
+        position: 'absolute',
+        top: 50,
+        transform: [
+            {translateY: -47},
+        ]
+    },
+
+    followBtn: {
+        height: 45,
+        width: 45,
+        borderRadius: 15,
+    }
 })

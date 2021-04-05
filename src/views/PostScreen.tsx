@@ -8,13 +8,13 @@ import {
     Image,
     RefreshControl,
     ScrollView,
-    ActivityIndicator, TouchableOpacity
+    ActivityIndicator, TouchableOpacity, Alert
 } from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
 import {Post} from "../components/Post"
 import {Avatar, IconButton, Subheading} from 'react-native-paper'
 import {TimeAgo} from "../components/TimeAgo"
-import {useNavigationState} from "@react-navigation/native"
+import {useIsFocused, useNavigationState} from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {Errors} from "../components/Errors"
@@ -22,16 +22,23 @@ import {BackButton} from "../components/BackButton"
 import {fetchApi} from "../utils/fetchApi"
 import {MaterialCommunityIcons} from "@expo/vector-icons"
 import {Success} from "../components/Success"
+import NetInfo from "@react-native-community/netinfo";
 
 const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
-    const [post, setPost] = useState(route.params.post)
+    const [post, setPost] = useState({
+        _id: '',
+        author: {_id: '', pseudo: '', profile_image: {url: ''}},
+        comment: [],
+        likes: [],
+        updatedAt: Date.now()
+    })
     const [comment, setComment] = useState<string>()
     const [isWait, setIsWait] = useState<boolean>(true)
     const [errors, setErrors] = useState<string[]>([])
     const [success, setSuccess] = useState<string | null>(null)
     const [refreshing, setRefreshing] = React.useState(false)
     const [onlineUserId, setOnlineUserId] = useState<string>()
-    const screenName = useNavigationState((state) => state.routes[state.index].name)
+    const isFocused = useIsFocused()
 
     AsyncStorage.getItem('onlineUser').then(value => {
         setOnlineUserId(value ? JSON.parse(value)._id : '')
@@ -39,14 +46,70 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
-        setRefreshing(false)
+
+        setTimeout(() => {
+            fetchData() && setRefreshing(false)
+        }, 2000)
     }, [])
 
-    useEffect(() => {
-        return navigation.addListener('focus', () =>
+    const fetchData = async () => {
+        setErrors([])
+        const query = JSON.stringify({
+            query: `query{
+                        getPost(id: "${route.params.post}"){
+                            _id
+                            content
+                            comment{
+                                _id
+                                createdAt
+                                comment
+                                author{
+                                    _id
+                                    pseudo
+                                    profile_image{
+                                        url
+                                    }
+                                }
+                            }
+                            likes{
+                                author{
+                                    _id
+                                }
+                            }
+                            author{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
+                            updatedAt 
+                        }
+                    }`
+        })
+
+        try {
+            const response = await fetchApi(query)
+            setPost(response.getPost[0])
             setIsWait(false)
-        )
-    }, [navigation])
+        } catch (e) {
+            if (e.errors) {
+                setErrors([e.errors])
+            } else {
+                NetInfo.fetch().then(state => {
+                    if (!state.isConnected) {
+                        setErrors(['No internet connection, please check your settings'])
+                    } else {
+                        setErrors(['An error has been encountered, please try again'])
+                    }
+                })
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [isFocused])
 
     const handleSubmit = async () => {
         setErrors([])
@@ -60,6 +123,8 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
 
         try {
             let response = await fetchApi(query)
+            setComment('')
+            await fetchData()
         } catch (e) {
             if (e.errors) {
                 setErrors([e.errors])
@@ -83,6 +148,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
         try {
             let response = await fetchApi(query)
             setSuccess('Comment successfully deleted')
+            await fetchData()
         } catch (e) {
             if (e.errors) {
                 setErrors([e.errors])
@@ -126,6 +192,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                         <TextInput
                                             style={{...styles.input, ...styles.inputArea, ...styles.commentInput}}
                                             placeholder={'Write a comment...'}
+                                            value={comment}
                                             multiline={true}
                                             placeholderTextColor="#8d8d8d"
                                             autoCapitalize="sentences"
@@ -159,9 +226,9 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                         </TouchableOpacity>
                                                     }
                                                     <Pressable
-                                                        onPress={() => screenName !== 'Profile' || onlineUserId === comment.author._id ?
-                                                            onlineUserId === comment.author._id ? navigation.navigate('Profile') : navigation.push('Profile') :
-                                                            navigation.push('Profile', {userId: comment.author._id})}
+                                                        onPress={() => {
+                                                            comment.author._id !== onlineUserId && navigation.push('Profile', {userId: comment.author._id})
+                                                        }}
                                                         style={styles.postAuthorData}
                                                     >
                                                         {
@@ -181,7 +248,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                             <Text
                                                                 style={styles.postAuthorName}>{comment.author.pseudo}</Text>
                                                             <Text style={styles.postDate}><TimeAgo
-                                                                time={'2020-12-12T21:00:12.990Z'}/></Text>
+                                                                time={comment.createdAt}/></Text>
                                                         </View>
                                                     </Pressable>
                                                     <View style={styles.postContent}>

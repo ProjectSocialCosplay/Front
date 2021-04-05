@@ -9,6 +9,7 @@ import ForgotPasswordScreen from "../views/users/ForgotPasswordScreen"
 import ProfileScreen from "../views/users/ProfileScreen"
 import ProfileUpdateScreen from "../views/users/ProfileUpdateScreen"
 import PostScreen from "../views/PostScreen"
+import FollowScreen from "../views/users/FollowScreen";
 
 const Stack = createStackNavigator()
 
@@ -54,6 +55,11 @@ const HomeRoutes = () => {
                 component={PostScreen}
                 options={{headerShown: false}}
             />
+            <Stack.Screen
+                name="Follow"
+                component={FollowScreen}
+                options={{headerShown: false}}
+            />
         </Stack.Navigator>
     )
 }
@@ -74,6 +80,11 @@ const ProfileRoutes = () => {
             <Stack.Screen
                 name="Post"
                 component={PostScreen}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Follow"
+                component={FollowScreen}
                 options={{headerShown: false}}
             />
         </Stack.Navigator>

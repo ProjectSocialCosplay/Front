@@ -86,18 +86,22 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                             updatedAt
                         }
                         followers{
+                            _id
                             follower{
                                 _id
                                 pseudo
+                                bio
                                 profile_image{
                                     url
                                 }
                             }
                         }
                         following{
+                            _id
                             follower{
                                 _id
                                 pseudo
+                                bio
                                 profile_image{
                                     url
                                 }
@@ -163,7 +167,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         try {
             const response = await fetchApi(query)
             console.log(route.params?.userId)
-            setSuccess('Friend added')
+            setSuccess('Follow successfully')
         } catch (e) {
             if (e.errors) {
                 setErrors([e.errors])
@@ -263,7 +267,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                                     :
                                                     <Button
                                                         mode="contained"
-                                                        color={'#e71d36'}
+                                                        color={'#f65a5a'}
                                                         dark={true}
                                                         icon={"account-remove"}
                                                         style={{
@@ -359,9 +363,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                         style={{...styles.button, ...stylesUser.btnSubscribers}}
                                         contentStyle={styles.buttonContent}
                                         color={'#5d6d80'}
-                                        onPress={() => {
-                                            alert('TODO: Show all friends')
-                                        }}
+                                        onPress={() => navigation.push('Follow', {username: user.pseudo, follow: user.followers, name: 'followers'})}
                                     >
                                         Show all
                                     </Button>
@@ -404,9 +406,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                         style={{...styles.button, ...stylesUser.btnSubscribers}}
                                         contentStyle={styles.buttonContent}
                                         color={'#5d6d80'}
-                                        onPress={() => {
-                                            alert('TODO: Show all friends')
-                                        }}
+                                        onPress={() => navigation.push('Follow', {username: user.pseudo, follow: user.following, name: 'followings'})}
                                     >
                                         Show all
                                     </Button>

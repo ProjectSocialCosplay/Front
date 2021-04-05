@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Image, Pressable, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
 import {Avatar} from "react-native-paper"
-import {useNavigation, useNavigationState} from '@react-navigation/native'
+import {useIsFocused, useNavigation, useNavigationState} from '@react-navigation/native'
 import {TimeAgo} from "./TimeAgo"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {MaterialCommunityIcons} from '@expo/vector-icons'
@@ -16,6 +16,9 @@ export const Post = ({data}: { data: any }) => {
     const navigation = useNavigation<any>()
     const screenName = useNavigationState((state) => state.routes[state.index].name)
     const [isLiked, setIsLiked] = useState<boolean>(false)
+    const [nbLike, setNbLike] = useState(data.likes.length);
+    const [nbComment, setNbComment] = useState(data.comment.length);
+    const isFocused = useIsFocused()
     // @ts-ignore
     const userId = useNavigationState((state) => state.routes[state.index].params?.userId)
 
@@ -23,6 +26,11 @@ export const Post = ({data}: { data: any }) => {
         setOnlineUserId(value ? JSON.parse(value)._id: '')
         setIsLiked(post.likes.some((l: { author: { _id: string } }) => l.author._id === onlineUserId))
     })
+
+    useEffect(() => {
+        setNbLike(data.likes.length)
+        setNbComment(data.comment.length)
+    }, [data])
 
     const handleLike = async () => {
         setErrors([])
@@ -69,7 +77,7 @@ export const Post = ({data}: { data: any }) => {
     }
 
     return (
-        <Pressable onPress={() => screenName !== 'Post' && navigation.push('Post', {post: post})}
+        <Pressable onPress={() => screenName !== 'Post' && navigation.push('Post', {post: post._id})}
                    style={styles.onePost}>
             <Errors errors={errors}/>
             <Pressable
@@ -103,7 +111,7 @@ export const Post = ({data}: { data: any }) => {
                 showsHorizontalScrollIndicator={false}
             >
                 <Pressable
-                    onPress={() => screenName !== 'Post' && navigation.push('Post', {post: post})}
+                    onPress={() => screenName !== 'Post' && navigation.push('Post', {post: post._id})}
                     style={styles.postImageScroll}
                 >
                     <Image
@@ -125,12 +133,12 @@ export const Post = ({data}: { data: any }) => {
                     <MaterialCommunityIcons
                         name={isLiked ? 'heart' : 'heart-outline'} size={20}
                         color={isLiked ? '#ef5151' : '#000'}/>
-                    <Text style={styles.postInfosText}>{post.likes.length}</Text>
+                    <Text style={styles.postInfosText}>{nbLike}</Text>
                 </TouchableOpacity>
 
                 <View style={styles.postInfos}>
                     <MaterialCommunityIcons name="comment-outline" size={20} color="black"/>
-                    <Text style={styles.postInfosText}>{post.comment.length}</Text>
+                    <Text style={styles.postInfosText}>{nbComment}</Text>
                 </View>
             </View>
         </Pressable>
