@@ -288,7 +288,24 @@ export const styles = StyleSheet.create({
             {translateX: -32},
         ],
         width: '100%'
-    }
+    },
+
+    searchBar: {
+        backgroundColor: '#eeeeee',
+        borderRadius: 15,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        marginVertical: 20,
+        color: '#000',
+    },
+
+    btnLogout: {
+        marginVertical: 20,
+        backgroundColor: '#f65a5a',
+        height: 46,
+        width: 46,
+        borderRadius: 8,
+    },
 })
 
 export const stylesUser = StyleSheet.create({

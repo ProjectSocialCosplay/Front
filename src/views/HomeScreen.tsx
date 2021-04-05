@@ -1,12 +1,15 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {SafeAreaView, Button, ActivityIndicator, RefreshControl, ScrollView, View} from 'react-native'
-import {styles} from "../assets/Styles"
+import {styles, stylesUser} from "../assets/Styles"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {fetchApi} from "../utils/fetchApi";
 import NetInfo from "@react-native-community/netinfo";
 import {useIsFocused} from "@react-navigation/native";
 import {Errors} from "../components/Errors";
 import {Post} from "../components/Post";
+import {CreatePost} from "../components/createPost";
+import {SearchBar} from "../components/SearchBar";
+import {IconButton} from "react-native-paper";
 
 const HomeScreen = ({navigation}: { navigation: any }) => {
     const [user, setUser] = useState({
@@ -170,7 +173,16 @@ const HomeScreen = ({navigation}: { navigation: any }) => {
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                     >
                         <View style={{...styles.content}}>
-                            <Button title="Log out" onPress={() => logOut()}/>
+                            <View style={{...stylesUser.friends, marginBottom: 0}}>
+                                <View style={{flex: 6}}>
+                                    <SearchBar/>
+                                </View>
+                                <View style={styles.flex}>
+                                    <IconButton icon="logout-variant" style={styles.btnLogout} color="white"
+                                                onPress={() => logOut()}/>
+                                </View>
+                            </View>
+                            <CreatePost/>
                             {
                                 user.feed.map((item, key) => (
                                     <Post data={item} key={key}/>

@@ -2,7 +2,7 @@ import {Image, Pressable, SafeAreaView, ScrollView, View} from "react-native";
 import {styles, stylesUser} from "../../assets/Styles";
 import React, {useEffect, useState} from "react";
 import {BackButton} from "../../components/BackButton";
-import {Subheading, Title, Avatar, Caption, IconButton} from "react-native-paper";
+import {Avatar, Caption, IconButton, Subheading, Title} from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {fetchApi} from "../../utils/fetchApi";
 import NetInfo from "@react-native-community/netinfo";
@@ -152,7 +152,9 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                     follow.map((item: any, key: any) => (
                                         route.params.name === 'followers' ?
                                             <View key={key} style={stylesUser.friends}>
-                                                <Pressable onPress={() => navigation.push('Profile', {'userId': item.user._id})} style={{flex: 5}}>
+                                                <Pressable
+                                                    onPress={() => navigation.push('Profile', {'userId': item.user._id})}
+                                                    style={{flex: 5}}>
                                                     <View style={stylesUser.friends}>
                                                         <View style={styles.flex}>
                                                             {
@@ -184,7 +186,7 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                 </Pressable>
                                                 <View style={{...styles.flex}}>
                                                     {
-                                                        onlineUser.following.some((l: { follower: { _id: string } }) => l.follower._id === item.user._id) ?
+                                                        onlineUser.following.some((l: { user: { _id: string } }) => l.user._id === item.user._id) ?
                                                             <IconButton
                                                                 icon="account-plus"
                                                                 color="white"
@@ -204,14 +206,27 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                                     backgroundColor: '#f65a5a'
                                                                 }}
                                                                 onPress={async () => {
-                                                                    await handleRemoveFriend(item._id)
+                                                                    if (route.params.name === 'following') {
+                                                                        await handleRemoveFriend(item._id)
+                                                                    } else {
+                                                                        const removeFollow = onlineUser.following.find((f: { follower: { _id: string } }) => {
+                                                                            return f.follower._id === item.user._id
+                                                                        })
+
+                                                                        if (removeFollow) {
+                                                                            const {_id} = removeFollow;
+                                                                            await handleRemoveFriend(_id)
+                                                                        }
+                                                                    }
                                                                 }}
                                                             />
                                                     }
                                                 </View>
                                             </View> :
                                             <View key={key} style={stylesUser.friends}>
-                                                <Pressable onPress={() => navigation.push('Profile', {'userId': item.follower._id})} style={{flex: 5}}>
+                                                <Pressable
+                                                    onPress={() => navigation.push('Profile', {'userId': item.follower._id})}
+                                                    style={{flex: 5}}>
                                                     <View style={stylesUser.friends}>
                                                         <View style={styles.flex}>
                                                             {
@@ -243,7 +258,7 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                 </Pressable>
                                                 <View style={{...styles.flex}}>
                                                     {
-                                                        onlineUser.following.some((l: { follower: { _id: string } }) => l.follower._id === item.follower._id) ?
+                                                        onlineUser.following.some((l: { user: { _id: string } }) => l.user._id === item.follower._id) ?
                                                             <IconButton
                                                                 icon="account-plus"
                                                                 color="white"

@@ -35,10 +35,10 @@ export const CreatePost = () => {
 
     return (
         <>
-            <Button mode="contained"
+            <Button mode="outlined"
                     style={{...styles.button, marginBottom: 10}}
                     contentStyle={styles.buttonContent}
-                    color={'#e9e9e9'}
+                    color={'#5d6d80'}
                     onPress={() => setVisible(true)}
             >
                 <Text>Create a new post</Text>
