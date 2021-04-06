@@ -134,6 +134,7 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
     }
 
     return (
+        // TODO: Enlever bouton si user online == follower/following
         <SafeAreaView style={styles.container}>
             <Errors errors={errors}/>
             <Success success={success}/>

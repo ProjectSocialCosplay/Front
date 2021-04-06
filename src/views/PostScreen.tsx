@@ -111,24 +111,27 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     }, [isFocused])
 
     const handleSubmit = async () => {
-        setErrors([])
-        let query = JSON.stringify({
-            query: `mutation{
-                createComment(comment: "${comment}", postId: "${post._id}"){
+        if (comment) {
+            setErrors([])
+            let lineBreaking = comment.replace(/[\n\r]/g, '\\n')
+            let query = JSON.stringify({
+                query: `mutation{
+                createComment(comment: "${lineBreaking}", postId: "${post._id}"){
                     _id
                 }
             }`
-        })
+            })
 
-        try {
-            await fetchApi(query)
-            setComment('')
-            await fetchData()
-        } catch (e) {
-            if (e.errors) {
-                setErrors([e.errors])
-            } else {
-                setErrors(['An error has been encountered, please try again '])
+            try {
+                await fetchApi(query)
+                setComment('')
+                await fetchData()
+            } catch (e) {
+                if (e.errors) {
+                    setErrors([e.errors])
+                } else {
+                    setErrors(['An error has been encountered, please try again '])
+                }
             }
         }
     }
@@ -162,7 +165,8 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
             contentContainerStyle={{flex: 1}}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps='handled'
-            scrollEventThrottle={0}
+            scrollEventThrottle={16}
+            extraHeight={80}
             scrollEnabled={false}
             enableOnAndroid={true}
         >

@@ -23,23 +23,26 @@ export const CreatePost = () => {
     }))
 
     const handleSubmit = async () => {
-        setErrors([])
-        let query = JSON.stringify({
-            query: `mutation{
-                createPost(content: "${text}"){
+        if (text) {
+            setErrors([])
+            let lineBreaking = text.replace(/[\n\r]/g, '\\n')
+            let query = JSON.stringify({
+                query: `mutation{
+                createPost(content: "${lineBreaking}"){
                     _id
                 }
             }`
-        })
+            })
 
-        try {
-            let response = await fetchApi(query)
-            setVisible(false)
-        } catch (e) {
-            if (e.errors) {
-                setErrors([e.errors])
-            } else {
-                setErrors(['An error has been encountered, please try again '])
+            try {
+                let response = await fetchApi(query)
+                setVisible(false)
+            } catch (e) {
+                if (e.errors) {
+                    setErrors([e.errors])
+                } else {
+                    setErrors(['An error has been encountered, please try again '])
+                }
             }
         }
     }

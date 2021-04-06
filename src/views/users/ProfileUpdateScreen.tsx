@@ -82,7 +82,7 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
             }
         }
 
-        /* TODO: Add bio to update */
+        /* TODO: Add bio to update (lineBreaking à faire) */
 
         const query_2 = JSON.stringify({
             query: `mutation{
