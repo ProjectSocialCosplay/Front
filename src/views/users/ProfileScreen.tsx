@@ -149,6 +149,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         try {
             const response = await fetchApi(query)
             if (route.params?.userId) {
+                setUser({...user, posts: []})
                 setUser(response.user)
                 setIsWait(false)
                 user.profile_image !== null && setImage([{
@@ -254,6 +255,7 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         }
     }
 
+    // @ts-ignore
     return (
         <>
             <SafeAreaView style={styles.container}>
@@ -434,7 +436,9 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                     imageUrls={image}
                     enableSwipeDown={true}
                     onSwipeDown={() => setVisible(false)}
-                    renderIndicator={() => null}
+                    renderIndicator={() => <></>}
+                    flipThreshold={100}
+                    swipeDownThreshold={100}
                 />
             </Modal>
         </>

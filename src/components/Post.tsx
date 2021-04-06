@@ -169,6 +169,8 @@ export const Post = ({data}: { data: any }) => {
                     imageUrls={images}
                     enableSwipeDown={true}
                     onSwipeDown={() => setVisible(false)}
+                    flipThreshold={100}
+                    swipeDownThreshold={100}
                 />
             </Modal>
         </>
