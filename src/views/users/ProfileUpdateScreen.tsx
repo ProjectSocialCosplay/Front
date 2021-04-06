@@ -82,7 +82,7 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
             }
         }
 
-        /* TODO: Add bio to update */
+        /* TODO: Add bio to update (lineBreaking à faire) */
 
         const query_2 = JSON.stringify({
             query: `mutation{
@@ -161,8 +161,8 @@ const ProfileUpdateScreen = ({navigation}: { navigation: any }) => {
                         <>
                             <ScrollView showsVerticalScrollIndicator={false}>
                                 <BackButton/>
-                                <Pressable style={stylesUser.avatarBorder} onPress={() => {
-                                    openImagePickerAsync()
+                                <Pressable style={stylesUser.avatarBorder} onPress={async () => {
+                                    await openImagePickerAsync()
                                 }}>
                                     {
                                         user.profile_image !== null ?

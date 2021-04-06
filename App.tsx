@@ -3,8 +3,8 @@ import {NavigationContainer} from "@react-navigation/native"
 import {createStackNavigator} from '@react-navigation/stack'
 import {AuthRoutes, AppRoutes} from "./src/utils/Navigation";
 import SplashScreen from "./src/views/SplashScreen";
-import {StatusBar} from "react-native";
-
+import {LogBox, StatusBar} from "react-native";
+LogBox.ignoreAllLogs(true)
 const Stack = createStackNavigator()
 
 class App extends React.Component<any, any> {

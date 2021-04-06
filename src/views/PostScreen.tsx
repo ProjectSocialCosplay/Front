@@ -8,13 +8,13 @@ import {
     Image,
     RefreshControl,
     ScrollView,
-    ActivityIndicator, TouchableOpacity, Alert
+    ActivityIndicator, TouchableOpacity
 } from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
 import {Post} from "../components/Post"
 import {Avatar, IconButton, Subheading} from 'react-native-paper'
 import {TimeAgo} from "../components/TimeAgo"
-import {useIsFocused, useNavigationState} from "@react-navigation/native"
+import {useIsFocused} from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import {Errors} from "../components/Errors"
@@ -111,24 +111,27 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
     }, [isFocused])
 
     const handleSubmit = async () => {
-        setErrors([])
-        let query = JSON.stringify({
-            query: `mutation{
-                createComment(comment: "${comment}", postId: "${post._id}"){
+        if (comment) {
+            setErrors([])
+            let lineBreaking = comment.replace(/[\n\r]/g, '\\n')
+            let query = JSON.stringify({
+                query: `mutation{
+                createComment(comment: "${lineBreaking}", postId: "${post._id}"){
                     _id
                 }
             }`
-        })
+            })
 
-        try {
-            let response = await fetchApi(query)
-            setComment('')
-            await fetchData()
-        } catch (e) {
-            if (e.errors) {
-                setErrors([e.errors])
-            } else {
-                setErrors(['An error has been encountered, please try again '])
+            try {
+                await fetchApi(query)
+                setComment('')
+                await fetchData()
+            } catch (e) {
+                if (e.errors) {
+                    setErrors([e.errors])
+                } else {
+                    setErrors(['An error has been encountered, please try again '])
+                }
             }
         }
     }
@@ -145,7 +148,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
         })
 
         try {
-            let response = await fetchApi(query)
+            await fetchApi(query)
             setSuccess('Comment successfully deleted')
             await fetchData()
         } catch (e) {
@@ -162,7 +165,8 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
             contentContainerStyle={{flex: 1}}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps='handled'
-            scrollEventThrottle={0}
+            scrollEventThrottle={16}
+            extraHeight={80}
             scrollEnabled={false}
             enableOnAndroid={true}
         >
@@ -170,6 +174,7 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                 <Errors errors={errors}/>
                 <Success success={success}/>
                 {
+                    /*TODO: Suppression du post */
                     isWait ?
                         <ActivityIndicator
                             color="#8d8d8d"
@@ -184,9 +189,9 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                             <BackButton title={post.author.pseudo + '\'s post'}/>
 
                             <View style={{...styles.content, marginTop: 60}}>
+                                <Post data={post}/>
                                 <View
-                                    style={{...styles.bgWhite, borderBottomRightRadius: 0, borderBottomLeftRadius: 0}}>
-                                    <Post data={post}/>
+                                    style={{...styles.commentBox}}>
                                     <View style={styles.commentInputRow}>
                                         <TextInput
                                             style={{...styles.input, ...styles.inputArea, ...styles.commentInput}}
