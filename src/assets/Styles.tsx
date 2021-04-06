@@ -137,10 +137,11 @@ export const styles = StyleSheet.create({
     },
 
     onePost: {
-        marginVertical: 10,
         backgroundColor: '#fff',
         paddingVertical: 15,
         borderRadius: 15,
+        marginTop: 10,
+        marginBottom: 25,
     },
 
     postAuthorData: {
@@ -169,18 +170,36 @@ export const styles = StyleSheet.create({
 
     postContent: {
         marginTop: 15,
-        marginBottom: 15,
+        marginBottom: 25,
     },
 
     postInfos: {
+        position: 'absolute',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        bottom: -20,
+        right: 10,
+        width: 220
+    },
+
+    postInfosView: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#eeeeee',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 20,
+        marginHorizontal: 5,
+        flex: 1,
     },
 
     postInfosText: {
         fontSize: 18,
         marginHorizontal: 5,
+        textAlign: 'center',
+        flex: 1
     },
 
     postImage: {
@@ -197,6 +216,14 @@ export const styles = StyleSheet.create({
         marginLeft: 20,
     },
 
+    commentBox: {
+        backgroundColor: '#fff',
+        marginTop: 20,
+        paddingVertical: 10,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
+
     commentInputRow: {
         display: 'flex',
         flexDirection: 'row',
@@ -206,8 +233,6 @@ export const styles = StyleSheet.create({
     },
 
     commentInput: {
-        marginTop: -10,
-        marginBottom: 20,
         height: 'auto',
         width: '70%',
         marginHorizontal: 20,
@@ -220,8 +245,6 @@ export const styles = StyleSheet.create({
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: -10,
-        marginBottom: 20,
         marginLeft: -10,
     },
 
@@ -295,12 +318,12 @@ export const styles = StyleSheet.create({
         borderRadius: 15,
         paddingHorizontal: 20,
         paddingVertical: 15,
-        marginVertical: 20,
+        marginVertical: 15,
         color: '#000',
     },
 
     btnLogout: {
-        marginVertical: 20,
+        marginVertical: 15,
         backgroundColor: '#f65a5a',
         height: 46,
         width: 46,

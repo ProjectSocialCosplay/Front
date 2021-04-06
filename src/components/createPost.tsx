@@ -1,15 +1,26 @@
-import {View, Text, Modal, TextInput} from "react-native"
+import {View, Text, Modal, TextInput, Pressable, Image} from "react-native"
 import React, {useState} from "react"
-import {styles} from "../assets/Styles"
-import {Button, Headline} from 'react-native-paper'
+import {styles, stylesUser} from "../assets/Styles"
+import {Avatar, Button, Caption, Headline} from 'react-native-paper'
 import {fetchApi} from "../utils/fetchApi";
 import {Errors} from "./Errors";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const CreatePost = () => {
     const [visible, setVisible] = useState<boolean>(false)
     const [text, setText] = useState<string>('')
     const [errors, setErrors] = useState<string[]>([])
+    const [user, setUser] = useState({
+        profile_image: {url: ''},
+        pseudo: ''
+    })
+
+    AsyncStorage.getItem('onlineUser').then((value => {
+        if (value) {
+            setUser(JSON.parse(value))
+        }
+    }))
 
     const handleSubmit = async () => {
         setErrors([])
@@ -35,14 +46,26 @@ export const CreatePost = () => {
 
     return (
         <>
-            <Button mode="outlined"
-                    style={{...styles.button, marginBottom: 10}}
-                    contentStyle={styles.buttonContent}
-                    color={'#5d6d80'}
-                    onPress={() => setVisible(true)}
-            >
-                <Text>Create a new post</Text>
-            </Button>
+            <Pressable style={{...styles.onePost, ...stylesUser.friends, paddingHorizontal: 20, marginTop: 0}}
+                       onPress={() => setVisible(true)}>
+                <View style={styles.flex}>
+                    {
+                        user.profile_image !== null ?
+                            <Image source={{uri: user.profile_image.url}}
+                                   style={{...stylesUser.avatar, ...styles.postAvatar}}/>
+                            :
+                            <Avatar.Text
+                                size={35}
+                                label={user.pseudo.substr(0, 1).toUpperCase()}
+                                style={{...stylesUser.avatar, ...styles.postAvatar}}
+                                color={'#fff'}
+                            />
+                    }
+                </View>
+                <View style={{flex: 5}}>
+                    <Caption style={{marginTop: 8}}>What do you want to say?</Caption>
+                </View>
+            </Pressable>
             <Modal
                 animationType={"slide"}
                 visible={visible}

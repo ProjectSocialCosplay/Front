@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Image, Pressable, ScrollView, Text, TouchableOpacity, View} from 'react-native'
+import {Image, Pressable, ScrollView, Text, View} from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
 import {Avatar} from "react-native-paper"
 import {useNavigation, useNavigationState} from '@react-navigation/native'
@@ -126,17 +126,27 @@ export const Post = ({data}: { data: any }) => {
             <View style={{...styles.postContent, paddingHorizontal: 20}}>
                 <Text>{post.content}</Text>
             </View>
-            <View style={{...styles.postInfos, paddingHorizontal: 20}}>
-                <TouchableOpacity style={{...styles.postInfos, marginRight: 20}} onPress={() => handleLike()}>
+            <View style={{...styles.postInfos}}>
+                <Pressable style={styles.postInfosView} onPress={() => handleLike()}>
                     <MaterialCommunityIcons
                         name={isLiked ? 'heart' : 'heart-outline'} size={20}
-                        color={isLiked ? '#ef5151' : '#000'}/>
-                    <Text style={styles.postInfosText}>{nbLike}</Text>
-                </TouchableOpacity>
-
-                <View style={styles.postInfos}>
-                    <MaterialCommunityIcons name="comment-outline" size={20} color="black"/>
-                    <Text style={styles.postInfosText}>{nbComment}</Text>
+                        color={isLiked ? '#ef5151' : '#000'}
+                        style={styles.flex}
+                    />
+                    <Text style={styles.postInfosText}>
+                        {nbLike}
+                    </Text>
+                </Pressable>
+                <View style={styles.postInfosView}>
+                    <MaterialCommunityIcons
+                        name="comment-outline"
+                        size={20}
+                        color="black"
+                        style={styles.flex}
+                    />
+                    <Text style={styles.postInfosText}>
+                        {nbComment}
+                    </Text>
                 </View>
             </View>
         </Pressable>

@@ -185,9 +185,9 @@ const PostScreen = ({route, navigation}: { route: any, navigation: any }) => {
                             <BackButton title={post.author.pseudo + '\'s post'}/>
 
                             <View style={{...styles.content, marginTop: 60}}>
+                                <Post data={post}/>
                                 <View
-                                    style={{...styles.bgWhite, borderBottomRightRadius: 0, borderBottomLeftRadius: 0}}>
-                                    <Post data={post}/>
+                                    style={{...styles.commentBox}}>
                                     <View style={styles.commentInputRow}>
                                         <TextInput
                                             style={{...styles.input, ...styles.inputArea, ...styles.commentInput}}
