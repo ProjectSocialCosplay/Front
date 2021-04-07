@@ -1,4 +1,4 @@
-import {View, Text, Modal, TextInput, Pressable, Image} from "react-native"
+import {View, Text, Modal, TextInput, Pressable, Image, TouchableOpacity, TouchableWithoutFeedback} from "react-native"
 import React, {useState} from "react"
 import {styles, stylesUser} from "../assets/Styles"
 import {Avatar, Button, Caption, Headline} from 'react-native-paper'
@@ -75,55 +75,64 @@ export const CreatePost = () => {
                 onRequestClose={() => setVisible(false)}
                 presentationStyle={'formSheet'}
             >
-                <KeyboardAwareScrollView contentContainerStyle={{flex: 1}} showsVerticalScrollIndicator={false}
-                                         keyboardShouldPersistTaps='always'
-                                         scrollEventThrottle={10}
-                                         extraHeight={80}
-                                         scrollEnabled={false}
-                                         enableOnAndroid={true}
+                <TouchableOpacity
+                    style={styles.flex}
+                    onPressOut={() => {
+                        setVisible(false)
+                    }}
                 >
-                    <View style={{...styles.postModal}}>
-                        <Headline>What do you want to say?</Headline>
-                        <TextInput
-                            style={{...styles.input, ...styles.postModalInput}}
-                            placeholder={'Write what do you want here...'}
-                            multiline={true}
-                            placeholderTextColor="#8d8d8d"
-                            autoCapitalize="sentences"
-                            autoCorrect={true}
-                            returnKeyType="default"
-                            onChangeText={(text) => setText(text)}
-                        />
-                        <View style={{...styles.postModalError}}>
-                            <Errors errors={errors}/>
-                        </View>
+                    <TouchableWithoutFeedback onPressIn={() => setVisible(false)}>
+                        <KeyboardAwareScrollView contentContainerStyle={{flex: 1}} showsVerticalScrollIndicator={false}
+                                                 keyboardShouldPersistTaps='always'
+                                                 scrollEventThrottle={10}
+                                                 extraHeight={80}
+                                                 scrollEnabled={false}
+                                                 enableOnAndroid={true}
+                        >
+                            <View style={{...styles.postModal}}>
+                                <Headline>What do you want to say?</Headline>
+                                <TextInput
+                                    style={{...styles.input, ...styles.postModalInput}}
+                                    placeholder={'Write what do you want here...'}
+                                    multiline={true}
+                                    placeholderTextColor="#8d8d8d"
+                                    autoCapitalize="sentences"
+                                    autoCorrect={true}
+                                    returnKeyType="default"
+                                    onChangeText={(text) => setText(text)}
+                                />
+                                <View style={{...styles.postModalError}}>
+                                    <Errors errors={errors}/>
+                                </View>
 
-                        <View style={{...styles.postModalBtn}}>
-                            <Button
-                                mode="contained"
-                                color={'#273c75'}
-                                style={{...styles.button, marginBottom: 10}}
-                                contentStyle={styles.buttonContent}
-                                onPress={() => {
-                                    handleSubmit()
-                                }}
-                            >
-                                Publish
-                            </Button>
-                            <Button
-                                mode="contained"
-                                color={'#e71d36'}
-                                style={{...styles.button}}
-                                contentStyle={styles.buttonContent}
-                                onPress={() => {
-                                    setVisible(false)
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                        </View>
-                    </View>
-                </KeyboardAwareScrollView>
+                                <View style={{...styles.postModalBtn}}>
+                                    <Button
+                                        mode="contained"
+                                        color={'#273c75'}
+                                        style={{...styles.button, marginBottom: 10}}
+                                        contentStyle={styles.buttonContent}
+                                        onPress={() => {
+                                            handleSubmit()
+                                        }}
+                                    >
+                                        Publish
+                                    </Button>
+                                    <Button
+                                        mode="contained"
+                                        color={'#e71d36'}
+                                        style={{...styles.button}}
+                                        contentStyle={styles.buttonContent}
+                                        onPress={() => {
+                                            setVisible(false)
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </View>
+                            </View>
+                        </KeyboardAwareScrollView>
+                    </TouchableWithoutFeedback>
+                </TouchableOpacity>
             </Modal>
         </>
     )

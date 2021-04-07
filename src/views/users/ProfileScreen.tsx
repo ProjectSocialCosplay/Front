@@ -73,6 +73,10 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                             likes{
                                 author{
                                     _id
+                                    pseudo
+                                    profile_image{
+                                        url
+                                    }
                                 }
                             }
                             author{

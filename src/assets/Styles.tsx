@@ -313,6 +313,20 @@ export const styles = StyleSheet.create({
         width: '100%'
     },
 
+    likeModal: {
+        backgroundColor: '#fff',
+        minHeight: 150,
+        maxHeight: 400,
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        flex: 1
+    },
+
     searchBar: {
         backgroundColor: '#eeeeee',
         borderRadius: 15,

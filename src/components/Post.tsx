@@ -1,7 +1,17 @@
 import React, {useEffect, useState} from 'react'
-import {Image, Modal, Pressable, ScrollView, Text, View} from 'react-native'
+import {
+    Image,
+    Modal,
+    Pressable,
+    SafeAreaView,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
+} from 'react-native'
 import {styles, stylesUser} from "../assets/Styles"
-import {Avatar} from "react-native-paper"
+import {Avatar, Caption, Subheading, Title} from "react-native-paper"
 import {useNavigation, useNavigationState} from '@react-navigation/native'
 import {TimeAgo} from "./TimeAgo"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -20,6 +30,7 @@ export const Post = ({data}: { data: any }) => {
     const [nbLike, setNbLike] = useState(data.likes.length);
     const [nbComment, setNbComment] = useState(data.comment.length)
     const [visible, setVisible] = useState<boolean>(false)
+    const [visibleLike, setVisibleLike] = useState<boolean>(false)
     // @ts-ignore
     const images = [
         {
@@ -63,6 +74,10 @@ export const Post = ({data}: { data: any }) => {
                         likes{
                             author{
                                 _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
                             }
                         }
                     }
@@ -141,16 +156,17 @@ export const Post = ({data}: { data: any }) => {
                     <Text>{post.content}</Text>
                 </View>
                 <View style={{...styles.postInfos}}>
-                    <Pressable style={styles.postInfosView} onPress={() => handleLike()}>
+                    <View style={styles.postInfosView}>
                         <MaterialCommunityIcons
                             name={isLiked ? 'heart' : 'heart-outline'} size={20}
                             color={isLiked ? '#ef5151' : '#000'}
                             style={styles.flex}
+                            onPress={() => handleLike()}
                         />
-                        <Text style={styles.postInfosText}>
-                            {nbLike}
-                        </Text>
-                    </Pressable>
+                        <Pressable style={styles.flex} onPress={() => setVisibleLike(true)}>
+                            <Text style={styles.postInfosText}>{nbLike}</Text>
+                        </Pressable>
+                    </View>
                     <View style={styles.postInfosView}>
                         <MaterialCommunityIcons
                             name="comment-outline"
@@ -172,6 +188,65 @@ export const Post = ({data}: { data: any }) => {
                     flipThreshold={100}
                     swipeDownThreshold={100}
                 />
+            </Modal>
+            <Modal visible={visibleLike}
+                   transparent={true}
+                   presentationStyle={'formSheet'}
+                   animationType="slide"
+                   onRequestClose={() => setVisibleLike(false)}>
+                <TouchableOpacity
+                    style={styles.flex}
+                    onPressOut={() => {
+                        setVisibleLike(false)
+                    }}
+                >
+                    <TouchableWithoutFeedback onPressIn={() => setVisibleLike(false)}>
+                        <View style={styles.likeModal}>
+                            <Title>Likes <Caption>({post.likes.length})</Caption></Title>
+                            {
+                                post.likes.length === 0 ?
+                                    <Subheading>There are no likes yet</Subheading> :
+                                    <ScrollView showsVerticalScrollIndicator={false}>
+                                        {
+                                            post.likes.map((item: { author: { _id: '', pseudo: '', profile_image: { url: '' } } }, key:
+                                                number) => (
+                                                <Pressable
+                                                    onPress={() => {
+                                                        onlineUserId === item.author._id ? navigation.push('Profile') : navigation.push('Profile', {'userId': item.author._id})
+                                                        setVisibleLike(false)
+                                                    }}
+                                                    style={{display: 'flex', flexDirection: 'row'}} key={key}>
+                                                    <View style={styles.flex}>
+                                                        {
+                                                            item.author.profile_image !== null ?
+                                                                <View style={stylesUser.oneFriend}>
+                                                                    <Image
+                                                                        source={{uri: item.author.profile_image.url}}
+                                                                        style={{...stylesUser.avatar, ...styles.postAvatar}}/>
+                                                                </View>
+                                                                :
+                                                                <View style={stylesUser.oneFriend}>
+                                                                    <Avatar.Text
+                                                                        size={35}
+                                                                        label={item.author.pseudo.charAt(0).toUpperCase()}
+                                                                        style={{...stylesUser.avatar, ...styles.postAvatar}}
+                                                                        color={'#fff'}
+                                                                    />
+                                                                </View>
+                                                        }
+                                                    </View>
+                                                    <View style={{flex: 6}}>
+                                                        <Subheading
+                                                            style={{marginTop: 10}}>{item.author.pseudo}</Subheading>
+                                                    </View>
+                                                </Pressable>
+                                            ))
+                                        }
+                                    </ScrollView>
+                            }
+                        </View>
+                    </TouchableWithoutFeedback>
+                </TouchableOpacity>
             </Modal>
         </>
     )
