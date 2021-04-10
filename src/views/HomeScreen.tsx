@@ -40,6 +40,10 @@ const HomeScreen = ({navigation}: { navigation: any }) => {
                             likes{
                                 author{
                                     _id
+                                    pseudo
+                                    profile_image{
+                                        url
+                                    }
                                 }
                             }
                             author{
@@ -98,6 +102,10 @@ const HomeScreen = ({navigation}: { navigation: any }) => {
                             likes{
                                 author{
                                     _id
+                                    pseudo
+                                    profile_image{
+                                        url
+                                    }
                                 }
                             }
                             author{

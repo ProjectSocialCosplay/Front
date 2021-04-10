@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {ActivityIndicator, Pressable, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
+import {ActivityIndicator, Modal, Pressable, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native'
 import {styles, stylesUser} from "../../assets/Styles"
 import {fetchApi} from "../../utils/fetchApi"
 import {FontAwesome5} from '@expo/vector-icons'
@@ -12,6 +12,7 @@ import NetInfo from '@react-native-community/netinfo'
 import {useIsFocused} from '@react-navigation/native'
 import {CreatePost} from "../../components/createPost";
 import {Success} from "../../components/Success";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => {
     const [user, setUser] = useState({
@@ -29,6 +30,8 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
     const isFocused = useIsFocused()
     const [isFollow, setIsFollow] = useState<boolean>(false)
     const [followId, setFollowId] = useState<string>('')
+    const [visible, setVisible] = useState<boolean>(false)
+    const [image, setImage] = useState([{url: ''}])
 
     AsyncStorage.getItem('onlineUser').then(value => {
         if (value) {
@@ -70,6 +73,10 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                             likes{
                                 author{
                                     _id
+                                    pseudo
+                                    profile_image{
+                                        url
+                                    }
                                 }
                             }
                             author{
@@ -146,8 +153,12 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         try {
             const response = await fetchApi(query)
             if (route.params?.userId) {
+                setUser({...user, posts: []})
                 setUser(response.user)
                 setIsWait(false)
+                user.profile_image !== null && setImage([{
+                    url: user.profile_image.url,
+                }])
             } else {
                 await AsyncStorage.setItem('onlineUser', JSON.stringify(response.getAuthUser))
             }
@@ -167,9 +178,13 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
 
         await AsyncStorage.getItem('onlineUser').then((value => {
             if (value !== null && !route.params?.userId) {
+                let online = JSON.parse(value)
                 setUser({...user, posts: []})
-                setUser(JSON.parse(value))
+                setUser(online)
                 setIsWait(false)
+                online.profile_image !== null && setImage([{
+                    url: online.profile_image.url,
+                }])
             }
         }))
     }
@@ -244,104 +259,108 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
         }
     }
 
+    // @ts-ignore
     return (
-        <SafeAreaView style={styles.container}>
-            <Errors errors={errors}/>
-            <Success success={success}/>
-            {
-                isWait ?
-                    <ActivityIndicator
-                        color="#8d8d8d"
-                        size="large"
-                        style={styles.splashView}
-                    />
-                    :
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
-                    >
-                        {
-                            route.params?.userId && <BackButton/>
-                        }
-
-                        <View style={stylesUser.avatarBorder}>
+        <>
+            <SafeAreaView style={styles.container}>
+                <Errors errors={errors}/>
+                <Success success={success}/>
+                {
+                    isWait ?
+                        <ActivityIndicator
+                            color="#8d8d8d"
+                            size="large"
+                            style={styles.splashView}
+                        />
+                        :
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                        >
                             {
-                                user.profile_image !== null ?
-                                    <Avatar.Image
-                                        size={175}
-                                        source={{uri: user.profile_image.url}}
-                                        style={stylesUser.avatar}
-                                    />
-                                    :
-                                    <Avatar.Text
-                                        size={175}
-                                        label={user.pseudo.substr(0, 1).toUpperCase()}
-                                        style={stylesUser.avatar}
-                                        color={'#fff'}
-                                    />
+                                route.params?.userId && <BackButton/>
                             }
-                        </View>
 
-                        <Text style={stylesUser.username}>{user.pseudo}</Text>
-                        <View style={stylesUser.locate}>
-                            <Text style={stylesUser.locatePin}>
-                                <FontAwesome5 name="map-marker-alt" size={15} color="black"/>
-                            </Text>
-                            <Text>Val-de-Marne (94)</Text>
-                        </View>
-                        {
-                            user.bio &&
-                            <Text style={stylesUser.bio}>
-                                {user.bio}
-                            </Text>
-                        }
+                            <View style={stylesUser.avatarBorder}>
+                                {
+                                    user.profile_image !== null ?
+                                        <Pressable onPress={() => setVisible(true)}>
+                                            <Avatar.Image
+                                                size={175}
+                                                source={{uri: user.profile_image.url}}
+                                                style={stylesUser.avatar}
+                                            />
+                                        </Pressable>
+                                        :
+                                        <Avatar.Text
+                                            size={175}
+                                            label={user.pseudo.substr(0, 1).toUpperCase()}
+                                            style={stylesUser.avatar}
+                                            color={'#fff'}
+                                        />
+                                }
+                            </View>
 
-                        <View style={{...styles.content, marginTop: 20}}>
+                            <Text style={stylesUser.username}>{user.pseudo}</Text>
+                            <View style={stylesUser.locate}>
+                                <Text style={stylesUser.locatePin}>
+                                    <FontAwesome5 name="map-marker-alt" size={15} color="black"/>
+                                </Text>
+                                <Text>Val-de-Marne (94)</Text>
+                            </View>
                             {
-                                route.params?.userId ?
-                                    (
-                                        <View style={stylesUser.buttonActions}>
-                                            {
-                                                !isFollow ?
-                                                    <Button
-                                                        mode="contained"
-                                                        color={'#43ab89'}
-                                                        dark={true}
-                                                        icon={"account-plus"}
-                                                        style={{
-                                                            ...styles.button,
-                                                            marginBottom: 20,
-                                                            width: '60%',
-                                                            marginHorizontal: '20%'
-                                                        }}
-                                                        contentStyle={styles.buttonContent}
-                                                        onPress={async () => {
-                                                            await handleAddFriend()
-                                                        }}
-                                                    >
-                                                        Follow
-                                                    </Button>
-                                                    :
-                                                    <Button
-                                                        mode="contained"
-                                                        color={'#f65a5a'}
-                                                        dark={true}
-                                                        icon={"account-remove"}
-                                                        style={{
-                                                            ...styles.button,
-                                                            marginBottom: 20,
-                                                            width: '60%',
-                                                            marginHorizontal: '20%'
-                                                        }}
-                                                        contentStyle={styles.buttonContent}
-                                                        onPress={async () => {
-                                                            await handleRemoveFriend(followId)
-                                                        }}
-                                                    >
-                                                        Unfollow
-                                                    </Button>
-                                            }
-                                            {/*<Button
+                                user.bio &&
+                                <Text style={stylesUser.bio}>
+                                    {user.bio}
+                                </Text>
+                            }
+
+                            <View style={{...styles.content, marginTop: 20}}>
+                                {
+                                    route.params?.userId ?
+                                        (
+                                            <View style={stylesUser.buttonActions}>
+                                                {
+                                                    !isFollow ?
+                                                        <Button
+                                                            mode="contained"
+                                                            color={'#43ab89'}
+                                                            dark={true}
+                                                            icon={"account-plus"}
+                                                            style={{
+                                                                ...styles.button,
+                                                                marginBottom: 20,
+                                                                width: '60%',
+                                                                marginHorizontal: '20%'
+                                                            }}
+                                                            contentStyle={styles.buttonContent}
+                                                            onPress={async () => {
+                                                                await handleAddFriend()
+                                                            }}
+                                                        >
+                                                            Follow
+                                                        </Button>
+                                                        :
+                                                        <Button
+                                                            mode="contained"
+                                                            color={'#f65a5a'}
+                                                            dark={true}
+                                                            icon={"account-remove"}
+                                                            style={{
+                                                                ...styles.button,
+                                                                marginBottom: 20,
+                                                                width: '60%',
+                                                                marginHorizontal: '20%'
+                                                            }}
+                                                            contentStyle={styles.buttonContent}
+                                                            onPress={async () => {
+                                                                await handleRemoveFriend(followId)
+                                                            }}
+                                                        >
+                                                            Unfollow
+                                                        </Button>
+                                                }
+                                                {/*<Button
                                             mode="contained"
                                             color={'#3962d0'}
                                             style={{...styles.button, marginTop: 10, marginBottom: 20}}
@@ -365,57 +384,68 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                                         >
                                             <MaterialCommunityIcons name="shopping" size={20} color="white"/>
                                         </Button>*/}
-                                        </View>
-                                    )
-                                    :
-                                    <Button
-                                        mode="contained"
-                                        color={'#273c75'}
-                                        icon="account-edit"
-                                        style={{...styles.button, marginTop: 10, marginBottom: 20}}
-                                        contentStyle={styles.buttonContent}
-                                        onPress={() => {
-                                            navigation.navigate('Update profile')
-                                        }}
-                                    >
-                                        Edit profile
-                                    </Button>
-                            }
+                                            </View>
+                                        )
+                                        :
+                                        <Button
+                                            mode="contained"
+                                            color={'#273c75'}
+                                            icon="account-edit"
+                                            style={{...styles.button, marginTop: 10, marginBottom: 20}}
+                                            contentStyle={styles.buttonContent}
+                                            onPress={() => {
+                                                navigation.navigate('Update profile')
+                                            }}
+                                        >
+                                            Edit profile
+                                        </Button>
+                                }
 
-                            <View style={stylesUser.subscribers}>
-                                <Pressable onPress={() => navigation.push('Follow', {
-                                    username: user.pseudo,
-                                    follow: user.followers,
-                                    name: 'followers'
-                                })} style={{...styles.flex, alignItems: 'center'}}>
-                                    <Subheading>Followers</Subheading>
-                                    <Title>{user.followers !== null ? user.followers.length : '0'}</Title>
-                                </Pressable>
-                                <Pressable onPress={() => navigation.push('Follow', {
-                                    username: user.pseudo,
-                                    follow: user.following,
-                                    name: 'following'
-                                })} style={{...styles.flex, alignItems: 'center'}}>
-                                    <Subheading>Followings</Subheading>
-                                    <Title>{user.following !== null ? user.following.length : '0'}</Title>
-                                </Pressable>
+                                <View style={stylesUser.subscribers}>
+                                    <Pressable onPress={() => navigation.push('Follow', {
+                                        username: user.pseudo,
+                                        follow: user.followers,
+                                        name: 'followers'
+                                    })} style={{...styles.flex, alignItems: 'center'}}>
+                                        <Subheading>Followers</Subheading>
+                                        <Title>{user.followers !== null ? user.followers.length : '0'}</Title>
+                                    </Pressable>
+                                    <Pressable onPress={() => navigation.push('Follow', {
+                                        username: user.pseudo,
+                                        follow: user.following,
+                                        name: 'following'
+                                    })} style={{...styles.flex, alignItems: 'center'}}>
+                                        <Subheading>Followings</Subheading>
+                                        <Title>{user.following !== null ? user.following.length : '0'}</Title>
+                                    </Pressable>
+                                </View>
+
+                                {
+                                    !route.params?.userId && <CreatePost/>
+                                }
+
+                                {
+                                    user.posts.map((el, index) => {
+                                        return (
+                                            <Post data={el} key={index}/>
+                                        )
+                                    })
+                                }
                             </View>
-
-                            {
-                                !route.params?.userId && <CreatePost/>
-                            }
-
-                            {
-                                user.posts.map((el, index) => {
-                                    return (
-                                        <Post data={el} key={index}/>
-                                    )
-                                })
-                            }
-                        </View>
-                    </ScrollView>
-            }
-        </SafeAreaView>
+                        </ScrollView>
+                }
+            </SafeAreaView>
+            <Modal visible={visible} transparent={true}>
+                <ImageViewer
+                    imageUrls={image}
+                    enableSwipeDown={true}
+                    onSwipeDown={() => setVisible(false)}
+                    renderIndicator={() => <></>}
+                    flipThreshold={100}
+                    swipeDownThreshold={100}
+                />
+            </Modal>
+        </>
     )
 }
 
