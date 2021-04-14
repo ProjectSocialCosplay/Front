@@ -181,7 +181,7 @@ const HomeScreen = ({navigation}: { navigation: any }) => {
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                     >
                         <View style={{...styles.content}}>
-                            <View style={{...stylesUser.friends, marginBottom: 0}}>
+                            <View style={{...stylesUser.friends, marginBottom: 0, zIndex: 1}}>
                                 <View style={{flex: 6}}>
                                     <SearchBar/>
                                 </View>

@@ -336,6 +336,14 @@ export const styles = StyleSheet.create({
         color: '#000',
     },
 
+    searchResult: {
+        backgroundColor: '#F8F8F8',
+        position: 'absolute',
+        top: 76,
+        width: Dimensions.get('window').width - 60,
+        minHeight: Dimensions.get('window').height - 225
+    },
+
     btnLogout: {
         marginVertical: 15,
         backgroundColor: '#f65a5a',
