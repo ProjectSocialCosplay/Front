@@ -193,6 +193,13 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         marginHorizontal: 5,
         flex: 1,
+        marginBottom: 15,
+    },
+
+    postInfos: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 
     postInfosText: {
@@ -351,6 +358,7 @@ export const styles = StyleSheet.create({
         width: 46,
         borderRadius: 8,
     },
+    }
 })
 
 export const stylesUser = StyleSheet.create({
@@ -427,6 +435,13 @@ export const stylesUser = StyleSheet.create({
         marginBottom: 20,
     },
 
+    buttonActions: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'stretch',
+    },
+
     friends: {
         display: 'flex',
         flexDirection: 'row',
@@ -460,4 +475,14 @@ export const stylesUser = StyleSheet.create({
         width: 45,
         borderRadius: 15,
     }
+    friendAvatar: {
+        height: 55,
+        width: 55,
+        borderRadius: 20,
+    },
+
+    oneFriend: {
+        flexBasis: '20%',
+        paddingVertical: 5,
+    },
 })
