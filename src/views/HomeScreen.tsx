@@ -8,8 +8,8 @@ import {useIsFocused} from "@react-navigation/native";
 import {Errors} from "../components/Errors";
 import {Post} from "../components/Post";
 import {CreatePost} from "../components/createPost";
-import {SearchBar} from "../components/SearchBar";
 import {IconButton} from "react-native-paper";
+import {SearchBar} from "../components/SearchBar";
 
 const HomeScreen = ({navigation}: { navigation: any }) => {
     const [user, setUser] = useState({
