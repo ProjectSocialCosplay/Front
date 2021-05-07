@@ -17,11 +17,12 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF",
-      },
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
-    }
+    },
+    "description": ""
   }
 }

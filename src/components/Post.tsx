@@ -3,7 +3,6 @@ import {
     Image,
     Modal,
     Pressable,
-    SafeAreaView,
     ScrollView,
     Text,
     TouchableOpacity,
@@ -116,7 +115,7 @@ export const Post = ({data}: { data: any }) => {
                     style={{...styles.postAuthorData, paddingHorizontal: 20}}
                 >
                     {
-                        post.author.profile_image !== null ?
+                        post.author.profile_image !== null && post.author.profile_image.url !== null ?
                             <Image source={{uri: post.author.profile_image.url}}
                                    style={{...stylesUser.avatar, ...styles.postAvatar}}/>
                             :
@@ -191,7 +190,6 @@ export const Post = ({data}: { data: any }) => {
             </Modal>
             <Modal visible={visibleLike}
                    transparent={true}
-                   presentationStyle={'formSheet'}
                    animationType="slide"
                    onRequestClose={() => setVisibleLike(false)}>
                 <TouchableOpacity
@@ -201,49 +199,51 @@ export const Post = ({data}: { data: any }) => {
                     }}
                 >
                     <TouchableWithoutFeedback onPressIn={() => setVisibleLike(false)}>
-                        <View style={styles.likeModal}>
-                            <Title>Likes <Caption>({post.likes.length})</Caption></Title>
-                            {
-                                post.likes.length === 0 ?
-                                    <Subheading>There are no likes yet</Subheading> :
-                                    <ScrollView showsVerticalScrollIndicator={false}>
-                                        {
-                                            post.likes.map((item: { author: { _id: '', pseudo: '', profile_image: { url: '' } } }, key:
-                                                number) => (
-                                                <Pressable
-                                                    onPress={() => {
-                                                        onlineUserId === item.author._id ? navigation.push('Profile') : navigation.push('Profile', {'userId': item.author._id})
-                                                        setVisibleLike(false)
-                                                    }}
-                                                    style={{display: 'flex', flexDirection: 'row'}} key={key}>
-                                                    <View style={styles.flex}>
-                                                        {
-                                                            item.author.profile_image !== null ?
-                                                                <View style={stylesUser.oneFriend}>
-                                                                    <Image
-                                                                        source={{uri: item.author.profile_image.url}}
-                                                                        style={{...stylesUser.avatar, ...styles.postAvatar}}/>
-                                                                </View>
-                                                                :
-                                                                <View style={stylesUser.oneFriend}>
-                                                                    <Avatar.Text
-                                                                        size={35}
-                                                                        label={item.author.pseudo.charAt(0).toUpperCase()}
-                                                                        style={{...stylesUser.avatar, ...styles.postAvatar}}
-                                                                        color={'#fff'}
-                                                                    />
-                                                                </View>
-                                                        }
-                                                    </View>
-                                                    <View style={{flex: 6}}>
-                                                        <Subheading
-                                                            style={{marginTop: 10}}>{item.author.pseudo}</Subheading>
-                                                    </View>
-                                                </Pressable>
-                                            ))
-                                        }
-                                    </ScrollView>
-                            }
+                        <View style={styles.likeModalBack}>
+                            <View style={styles.likeModal}>
+                                <Title>Likes <Caption>({post.likes.length})</Caption></Title>
+                                {
+                                    post.likes.length === 0 ?
+                                        <Subheading>There are no likes yet</Subheading> :
+                                        <ScrollView showsVerticalScrollIndicator={false}>
+                                            {
+                                                post.likes.map((item: { author: { _id: '', pseudo: '', profile_image: { url: '' } } }, key:
+                                                    number) => (
+                                                    <Pressable
+                                                        onPress={() => {
+                                                            onlineUserId === item.author._id ? navigation.navigate('Profile') : navigation.push('Profile', {'userId': item.author._id})
+                                                            setVisibleLike(false)
+                                                        }}
+                                                        style={{display: 'flex', flexDirection: 'row'}} key={key}>
+                                                        <View style={styles.flex}>
+                                                            {
+                                                                item.author.profile_image && item.author.profile_image.url !== null ?
+                                                                    <View style={stylesUser.oneFriend}>
+                                                                        <Image
+                                                                            source={{uri: item.author.profile_image.url}}
+                                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}/>
+                                                                    </View>
+                                                                    :
+                                                                    <View style={stylesUser.oneFriend}>
+                                                                        <Avatar.Text
+                                                                            size={35}
+                                                                            label={item.author.pseudo.charAt(0).toUpperCase()}
+                                                                            style={{...stylesUser.avatar, ...styles.postAvatar}}
+                                                                            color={'#fff'}
+                                                                        />
+                                                                    </View>
+                                                            }
+                                                        </View>
+                                                        <View style={{flex: 6}}>
+                                                            <Subheading
+                                                                style={{marginTop: 10}}>{item.author.pseudo}</Subheading>
+                                                        </View>
+                                                    </Pressable>
+                                                ))
+                                            }
+                                        </ScrollView>
+                                }
+                            </View>
                         </View>
                     </TouchableWithoutFeedback>
                 </TouchableOpacity>
