@@ -69,6 +69,13 @@ export const Post = ({data}: { data: any }) => {
                     post{
                         comment{
                             _id
+                            author{
+                                _id
+                                pseudo
+                                profile_image{
+                                    url
+                                }
+                            }
                         }
                         likes{
                             author{
@@ -227,7 +234,7 @@ export const Post = ({data}: { data: any }) => {
                                                                     <View style={stylesUser.oneFriend}>
                                                                         <Avatar.Text
                                                                             size={35}
-                                                                            label={item.author.pseudo.charAt(0).toUpperCase()}
+                                                                            label={item.author.pseudo && item.author.pseudo.charAt(0).toUpperCase()}
                                                                             style={{...stylesUser.avatar, ...styles.postAvatar}}
                                                                             color={'#fff'}
                                                                         />
