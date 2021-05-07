@@ -196,12 +196,6 @@ export const styles = StyleSheet.create({
         marginBottom: 15,
     },
 
-    postInfos: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-
     postInfosText: {
         fontSize: 18,
         marginHorizontal: 5,
@@ -334,6 +328,13 @@ export const styles = StyleSheet.create({
         flex: 1
     },
 
+    likeModalBack: {
+        backgroundColor: 'rgba(52,52,52,0.2)',
+        flex: 1,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20
+    },
+
     searchBar: {
         backgroundColor: '#eeeeee',
         borderRadius: 15,
@@ -348,7 +349,7 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         top: 76,
         width: Dimensions.get('window').width - 60,
-        minHeight: Dimensions.get('window').height - 225
+        minHeight: Dimensions.get('window').height - 200
     },
 
     btnLogout: {
@@ -357,7 +358,6 @@ export const styles = StyleSheet.create({
         height: 46,
         width: 46,
         borderRadius: 8,
-    },
     }
 })
 
@@ -435,13 +435,6 @@ export const stylesUser = StyleSheet.create({
         marginBottom: 20,
     },
 
-    buttonActions: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'stretch',
-    },
-
     friends: {
         display: 'flex',
         flexDirection: 'row',
@@ -474,15 +467,41 @@ export const stylesUser = StyleSheet.create({
         height: 45,
         width: 45,
         borderRadius: 15,
-    }
-    friendAvatar: {
-        height: 55,
-        width: 55,
-        borderRadius: 20,
     },
 
-    oneFriend: {
-        flexBasis: '20%',
-        paddingVertical: 5,
+    searchAvatar: {
+        height: 50,
+        width: 50,
+        borderRadius: 20,
+    }
+})
+
+export const stylesEvent = StyleSheet.create({
+    container: {
+
     },
+    eventTitle: {
+
+    },
+    card: {
+
+    },
+    cardContent: {
+
+    },
+    cardTitle: {
+
+    },
+    cardDate: {
+
+    },
+    cardDescription: {
+
+    },
+    cardButton: {
+
+    },
+    cardFriends: {
+
+    }
 })
