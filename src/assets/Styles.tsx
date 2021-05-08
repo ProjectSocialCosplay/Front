@@ -473,5 +473,35 @@ export const stylesUser = StyleSheet.create({
         height: 50,
         width: 50,
         borderRadius: 20,
+    }
+})
+
+export const stylesEvent = StyleSheet.create({
+    container: {
+
     },
+    eventTitle: {
+
+    },
+    card: {
+
+    },
+    cardContent: {
+
+    },
+    cardTitle: {
+
+    },
+    cardDate: {
+
+    },
+    cardDescription: {
+
+    },
+    cardButton: {
+
+    },
+    cardFriends: {
+
+    }
 })
