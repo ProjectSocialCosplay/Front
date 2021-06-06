@@ -21,8 +21,7 @@ export const Errors = ({errors}: { errors: string[] }) => {
                 setShow(true)
                 Keyboard.dismiss()
 
-                Animated.timing
-                (
+                Animated.timing(
                     animated,
                     {
                         toValue: 1,
@@ -39,8 +38,7 @@ export const Errors = ({errors}: { errors: string[] }) => {
             if (hidden) {
                 setHidden(false)
 
-                Animated.timing
-                (
+                Animated.timing(
                     animated,
                     {
                         toValue: 0,

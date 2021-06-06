@@ -6,7 +6,7 @@ export const fetchApi = async (query: string) => {
         return value ? value : ''
     })
 
-    let response = await fetch('http://192.168.1.13:7000/graphql', {
+    let response = await fetch('https://back-social-cosplay.herokuapp.com/graphql', {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
