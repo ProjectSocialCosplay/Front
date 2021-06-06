@@ -302,12 +302,12 @@ const ProfileScreen = ({route, navigation}: { route: any, navigation: any }) => 
                             </View>
 
                             <Text style={stylesUser.username}>{user.pseudo}</Text>
-                            <View style={stylesUser.locate}>
+                            {/*<View style={stylesUser.locate}>
                                 <Text style={stylesUser.locatePin}>
                                     <FontAwesome5 name="map-marker-alt" size={15} color="black"/>
                                 </Text>
                                 <Text>Val-de-Marne (94)</Text>
-                            </View>
+                            </View>*/}
                             {
                                 user.bio &&
                                 <Text style={stylesUser.bio}>

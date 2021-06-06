@@ -5,10 +5,7 @@ import {styles} from "../assets/Styles"
 import {useNavigation} from "@react-navigation/native"
 import {Title} from 'react-native-paper'
 
-interface BackButton {
-    title?: string
-}
-export const BackButton = ({title}: BackButton) => {
+export const BackButton = ({title}: { title?: string }) => {
     const navigation = useNavigation()
     return (
         <View style={styles.backBtnPosition}>

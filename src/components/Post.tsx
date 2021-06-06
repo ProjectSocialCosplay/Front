@@ -30,6 +30,7 @@ export const Post = ({data}: { data: any }) => {
     const [nbComment, setNbComment] = useState(data.comment.length)
     const [visible, setVisible] = useState<boolean>(false)
     const [visibleLike, setVisibleLike] = useState<boolean>(false)
+    const [waitingLike, setWaitingLike] = useState<boolean>(false)
     // @ts-ignore
     const images = [
         {
@@ -54,17 +55,19 @@ export const Post = ({data}: { data: any }) => {
     }, [data])
 
     const handleLike = async () => {
-        setErrors([])
-        let value
+        if(!waitingLike){
+            setWaitingLike(true)
+            setErrors([])
+            let value
 
-        if (!isLiked) {
-            value = 'createLike'
-        } else {
-            value = 'deleteLike'
-        }
+            if (!isLiked) {
+                value = 'createLike'
+            } else {
+                value = 'deleteLike'
+            }
 
-        let query = JSON.stringify({
-            query: `mutation{
+            let query = JSON.stringify({
+                query: `mutation{
                 ${value}(postId: "${post._id}"){
                     post{
                         comment{
@@ -89,26 +92,29 @@ export const Post = ({data}: { data: any }) => {
                     }
                 }
             }`
-        })
+            })
 
-        try {
-            let response = await fetchApi(query)
-            if (!isLiked) {
-                setPost({...post, comment: response.createLike.post.comment, likes: response.createLike.post.likes})
-                setNbLike(response.createLike.post.likes.length)
-                setNbComment(response.createLike.post.comment.length)
-            } else {
-                setPost({...post, comment: response.deleteLike.post.comment, likes: response.deleteLike.post.likes})
-                setNbLike(response.deleteLike.post.likes.length)
-                setNbComment(response.deleteLike.post.comment.length)
+            try {
+                let response = await fetchApi(query)
+                if (!isLiked) {
+                    setPost({...post, comment: response.createLike.post.comment, likes: response.createLike.post.likes})
+                    setNbLike(response.createLike.post.likes.length)
+                    setNbComment(response.createLike.post.comment.length)
+                } else {
+                    setPost({...post, comment: response.deleteLike.post.comment, likes: response.deleteLike.post.likes})
+                    setNbLike(response.deleteLike.post.likes.length)
+                    setNbComment(response.deleteLike.post.comment.length)
+                }
+                setIsLiked(post.likes.some((l: { author: { _id: string } }) => l.author._id === onlineUserId))
+            } catch (e) {
+                if (e.errors) {
+                    setErrors([e.errors])
+                } else {
+                    setErrors(['An error has been encountered, please try again '])
+                }
             }
-            setIsLiked(post.likes.some((l: { author: { _id: string } }) => l.author._id === onlineUserId))
-        } catch (e) {
-            if (e.errors) {
-                setErrors([e.errors])
-            } else {
-                setErrors(['An error has been encountered, please try again '])
-            }
+
+            setWaitingLike(false)
         }
     }
 

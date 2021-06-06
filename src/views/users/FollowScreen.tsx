@@ -29,81 +29,6 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
         setFollow(route.params.follow)
     }, [isFocused])
 
-    const updateList = async () => {
-        let request = route.params.name === 'followers' ? 'followers' : 'following'
-        const query = JSON.stringify({
-            query: `query {
-                    getAuthUser{
-                        ${request}{
-                            _id
-                            user{
-                                _id
-                                pseudo
-                                bio
-                                profile_image{
-                                    url
-                                }
-                            }
-                            follower{
-                                _id
-                                pseudo
-                                bio
-                                profile_image{
-                                    url
-                                }
-                            }
-                        }
-                    }
-                }`
-        })
-
-        try {
-            const response = await fetchApi(query)
-            route.params.name === 'followers' ? setFollow(response.getAuthUser.followers) : setFollow(response.getAuthUser.following)
-        } catch (e) {
-            if (e.errors) {
-                setErrors([e.errors])
-            } else {
-                NetInfo.fetch().then(state => {
-                    if (!state.isConnected) {
-                        setErrors(['No internet connection, please check your settings'])
-                    } else {
-                        setErrors(['An error has been encountered, please try again'])
-                    }
-                })
-            }
-        }
-    }
-
-    const handleAddFriend = async (id: string) => {
-        const query = JSON.stringify(
-            {
-                query: `mutation{
-                            createFollow(followerId: "${id}"){
-                                _id
-                            }
-                        }`
-            })
-
-        try {
-            await fetchApi(query)
-            await updateList()
-            setSuccess('Follow successfully')
-        } catch (e) {
-            if (e.errors) {
-                setErrors([e.errors])
-            } else {
-                NetInfo.fetch().then(state => {
-                    if (!state.isConnected) {
-                        setErrors(['No internet connection, please check your settings'])
-                    } else {
-                        setErrors(['An error has been encountered, please try again'])
-                    }
-                })
-            }
-        }
-    }
-
     const handleRemoveFriend = async (id: string) => {
         const query = JSON.stringify(
             {
@@ -116,8 +41,11 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
 
         try {
             await fetchApi(query)
-            await updateList()
             setSuccess('Unfollow successfully')
+            const copyFollow = follow.filter(obj => {
+                return obj._id !== id
+            })
+            setFollow(copyFollow)
         } catch (e) {
             if (e.errors) {
                 setErrors([e.errors])
@@ -186,20 +114,10 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                 </Pressable>
                                                 <View style={{...styles.flex}}>
                                                     {
-                                                        onlineUser._id !== item.user._id
-                                                        && (onlineUser.following.find((l: { follower: { _id: string } }) => {
-                                                            return l.follower._id === item.user._id
-                                                        }) === undefined ?
-                                                            <IconButton
-                                                                icon="account-plus"
-                                                                color="white"
-                                                                size={20}
-                                                                style={{
-                                                                    ...stylesUser.followBtn,
-                                                                    backgroundColor: '#43ab89'
-                                                                }}
-                                                                onPress={() => handleAddFriend(item.user._id)}
-                                                            /> :
+                                                        (
+                                                            onlineUser.following.find((f: { follower: { _id: string }, user: { _id: string } }) => {
+                                                                return f.user._id === onlineUser._id && f.follower._id === item.follower._id
+                                                            }) === undefined &&
                                                             <IconButton
                                                                 icon="account-remove"
                                                                 color="white"
@@ -261,30 +179,25 @@ const FollowScreen = ({route, navigation}: { route: any, navigation: any }) => {
                                                 </Pressable>
                                                 <View style={{...styles.flex}}>
                                                     {
-                                                        onlineUser._id !== item.follower._id
-                                                        && (onlineUser.following.some((l: { user: { _id: string } }) => l.user._id === item.follower._id) ?
-                                                            <IconButton
-                                                                icon="account-plus"
-                                                                color="white"
-                                                                size={20}
-                                                                style={{
-                                                                    ...stylesUser.followBtn,
-                                                                    backgroundColor: '#43ab89'
-                                                                }}
-                                                                onPress={() => handleAddFriend(item.follower._id)}
-                                                            /> :
-                                                            <IconButton
-                                                                icon="account-remove"
-                                                                color="white"
-                                                                size={20}
-                                                                style={{
-                                                                    ...stylesUser.followBtn,
-                                                                    backgroundColor: '#f65a5a'
-                                                                }}
-                                                                onPress={async () => {
-                                                                    await handleRemoveFriend(item._id)
-                                                                }}
-                                                            />)
+                                                        (
+                                                            onlineUser.following.find((f: { user: { _id: string }, follower: { _id: string } }) => {
+                                                                return f.user._id === onlineUser._id && f.follower._id === item.follower._id
+                                                            }) !== undefined &&
+                                                            <>
+                                                                <IconButton
+                                                                    icon="account-remove"
+                                                                    color="white"
+                                                                    size={20}
+                                                                    style={{
+                                                                        ...stylesUser.followBtn,
+                                                                        backgroundColor: '#f65a5a'
+                                                                    }}
+                                                                    onPress={async () => {
+                                                                        await handleRemoveFriend(item._id)
+                                                                    }}
+                                                                />
+                                                            </>
+                                                        )
                                                     }
                                                 </View>
                                             </View>

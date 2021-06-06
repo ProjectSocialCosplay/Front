@@ -178,9 +178,9 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        bottom: -20,
+        bottom: -30,
         right: 10,
-        width: 220
+        width: 220,
     },
 
     postInfosView: {
