@@ -10,6 +10,7 @@ import ProfileScreen from "../views/users/ProfileScreen"
 import ProfileUpdateScreen from "../views/users/ProfileUpdateScreen"
 import PostScreen from "../views/PostScreen"
 import FollowScreen from "../views/users/FollowScreen";
+import TermsScreen from "../views/rgpd/Terms";
 
 const Stack = createStackNavigator()
 
@@ -29,6 +30,11 @@ export const AuthRoutes = () => {
             <Stack.Screen
                 name="Forgot your password"
                 component={ForgotPasswordScreen}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Terms"
+                component={TermsScreen}
                 options={{headerShown: false}}
             />
         </Stack.Navigator>

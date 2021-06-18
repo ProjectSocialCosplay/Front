@@ -358,6 +358,18 @@ export const styles = StyleSheet.create({
         height: 46,
         width: 46,
         borderRadius: 8,
+    },
+    rgpd: {
+        marginVertical: 15,
+    },
+    termsText: {
+        paddingBottom: 3,
+        color: '#8d8d8d',
+    },
+    termsLink: {
+        textAlign: "center",
+        color: '#C13C39'
+
     }
 })
 
@@ -504,4 +516,19 @@ export const stylesEvent = StyleSheet.create({
     cardFriends: {
 
     }
+})
+
+export const stylesTerms = StyleSheet.create({
+    container: {
+        margin: 30,
+    },
+    textTerms: {
+        textAlign: "justify",
+        paddingVertical: 10,
+        fontSize: 18,
+    },
+    titleTerms: {
+        fontSize: 24,
+        color: '#C13C39'
+    },
 })
