@@ -4,7 +4,10 @@ import {
     Image,
     SafeAreaView,
     TextInput,
-    View
+    View,
+    Text,
+    Linking,
+    TouchableOpacity
 } from 'react-native'
 import {styles} from '../../assets/Styles'
 import {Errors} from "../../components/Errors"
@@ -165,6 +168,14 @@ const RegisterScreen = ({navigation}: { navigation: any }) => {
                         }}
                         onSubmitEditing={() => handleSubmit()}
                     />
+                    <View style={styles.rgpd}>
+                        <Text>By clicking Sign Up, you agree to our </Text>
+                        <TouchableOpacity>
+                            <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('Terms')} >
+                                Terms
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
                     <Button
                         mode="contained"
