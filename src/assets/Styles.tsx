@@ -358,6 +358,17 @@ export const styles = StyleSheet.create({
         height: 46,
         width: 46,
         borderRadius: 8,
+    },
+    rgpd: {
+        marginVertical: 15,
+    },
+    termsText: {
+        paddingBottom: 3,
+    },
+    termsLink: {
+        textAlign: "center",
+        color: '#C13C39'
+
     }
 })
 

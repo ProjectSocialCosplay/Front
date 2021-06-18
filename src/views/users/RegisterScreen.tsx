@@ -169,10 +169,10 @@ const RegisterScreen = ({navigation}: { navigation: any }) => {
                         onSubmitEditing={() => handleSubmit()}
                     />
                     <View style={styles.rgpd}>
-                        <Text>By clicking Sign Up, you agree to our </Text>
+                        <Text style={styles.termsText}>By clicking Sign Up, you agree to our </Text>
                         <TouchableOpacity>
-                            <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('Terms')} >
-                                Terms
+                            <Text style={styles.termsLink} onPress={() => navigation.navigate('Terms')} >
+                                Terms and Policies
                             </Text>
                         </TouchableOpacity>
                     </View>
