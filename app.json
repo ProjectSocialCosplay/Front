@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Cosplay",
+    "slug": "Cosplay",
+    "version": "1.0.0",
+    "privacy": "public",
+    "orientation": "portrait",
+    "icon": "./src/assets/logo.png",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/logo.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/favicon.png"
+    },
+    "description": "This is a school project : a social network dedicated to cosplayers"
+  }
+}
